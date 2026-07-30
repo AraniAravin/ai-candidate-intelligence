@@ -17,3 +17,14 @@ Cosine similarity is a way determing the similarity of the words betwen sentence
 
 ## Observations from my experiment
 When the text in CV description is changed and based on its relevance to the Job description text the cosine similarity changes and when we add the same text then the cosine similarity is 1.0 suggesting a 100% match and by using words like 'React' the similarity is like 0.09.
+
+# Concepts — Day 2
+
+## What are sentence transformers?
+It is a library of hugging face, which converts sentencers into vector embedding which can be easiy passed to find the cosine similarity to understand the best match of a candidate to the JD
+
+## Pretrained Embedded Models
+There are various pretrained embedded models to do the vector embeddings on the sentences so that we do not have to do the training and validation from the beginning of the cycle. We have already used a model called 'all-MiniLM-L6-v2' which is a small lightweight model performing simple actions and the shape of it is (384,) meaning 384 numbers will be used to represent a sentence. There are other embedding models that give other dimensions
+
+## Vector Dimensions
+But when we try to match two vectors it needs to be in the same dimenstions also to be passed to cosine similarity
