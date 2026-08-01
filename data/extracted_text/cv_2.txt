@@ -1,0 +1,135 @@
+ARANI ARAVINTHAN
+Data Analyst and MSc Data Science & Artificial Intelligence student with professional experience analyzing business data,
+developing dashboards, and supporting data-driven decision-making. Skilled in SQL, Python, R, Power BI, Excel, statistical
+analysis, and data visualization with experience cleaning, transforming, and analyzing complex datasets to generate
+actionable business insights. Experienced collaborating with cross-functional stakeholders, translating analytical findings
+into business recommendations, and improving reporting processes through data-driven solutions. 
+📧 araniaravin16@gmail.com
+📞 0503532764
+📍 Dubai, UAE
+SKILLS
+Programming
+Python, R, SQL, Java
+Analytics Tools
+Power BI, Excel (Pivot Tables, Power Query, Lookup
+Functions), DAX, RStudio, Pandas, NumPy, Scikit-learn
+Databases
+SQL, MySQL, Oracle
+Business Skills
+Stakeholder Communication, Business Analysis, Process
+Improvement, Problem Solving, Presentation of Insights,
+Agile, Scrum
+Data Analytics
+Data Analysis, Data Cleaning, Data Wrangling, Exploratory Data Analysis (EDA), Statistical Analysis, Data Visualization,
+Dashboard Development, KPI Reporting, Business Intelligence, Reporting & Insights, Trend Analysis, Data Validation, Data
+Transformation
+WORK EXPERIENCE
+Tech Unicorn
+April 2026
+Project Management Intern — Dubai, UAE
+Collected and analyzed project performance data to support software delivery decisions.
+Created project reports and monitored KPIs using Azure DevOps dashboards.
+Worked with cross-functional teams to track delivery progress and identify process improvement opportunities.
+Prepared technical documentation and business reports for project stakeholders.
+Supported testing activities through data validation, defect analysis, and reporting.
+Presented project updates and analytical findings during sprint reviews and stakeholder meetings.
+Scienter Technologies (Pvt) Ltd
+Jun 2024 – Apr 2025
+Associate Software Engineer
+Analyzed SQL databases to identify data quality issues and improve reporting accuracy.
+Optimized SQL queries and backend data retrieval, reducing response times by up to 30%.
+Validated application and database data to ensure consistency, integrity, and reliability.
+Worked with cross-functional stakeholders to gather business requirements and support data-driven application
+enhancements.
+Supported Agile delivery by monitoring project metrics, resolving defects, and improving operational processes.
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+1 / 2
+
+Scienter Technologies (Pvt) Ltd
+Jun 2023 – Jun 2024
+Software Engineering Intern
+Supported the development, implementation, testing, and maintenance of enterprise software applications.
+Contributed to software development tasks and supported the implementation of assigned functional requirements.
+Worked with existing application components to understand system functionality and support application improvements.
+Collaborated with development and QA teams throughout software development and delivery activities.
+Participated in Agile ceremonies, sprint planning, and team coordination activities.
+Used Git and TFS as part of the software development and version control workflow.
+Prepared and maintained technical documentation and project records.
+Collaborated with senior developers and cross-functional teams to support successful software delivery.
+EDUCATION
+Middlesex University Dubai
+Jan 2026
+MSc Data Science & Artificial Intelligence (Part-Time)
+University of Central Lancashire
+March 2022 – May 2025
+Bachelor of Software Engineering
+First Class Honors (77.4% APM)
+Gold Medalist
+PROJECTS
+Business Data Analytics using R
+Technologies / Skills: R • RStudio • tidyverse • ggplot2 • dplyr • Statistical Analysis
+Performed the complete end-to-end data analytics lifecycle using R.
+Collected, cleaned, transformed, and validated multi-source public health datasets.
+Conducted Exploratory Data Analysis (EDA) to identify trends, anomalies, and relationships between obesity, diabetes,
+hypertension, physical activity, and regional health indicators.
+Applied statistical analysis and correlation techniques to evaluate relationships between key health variables.
+Created high-quality visualizations using ggplot2 to communicate analytical findings effectively.
+Produced actionable insights and recommendations supported by data for evidence-based decision making.
+Documented the complete analytical workflow including data preparation, analysis, visualization, interpretation, and reporting.
+Global Health Analytics Dashboard
+Technologies / Skills: Power BI • SQL • Python • DAX
+Designed interactive Power BI dashboards for analyzing global obesity, diabetes, hypertension, and physical activity trends.
+Cleaned, transformed, and integrated datasets using SQL and Python to improve reporting quality.
+Developed KPI dashboards, drill-through reports, Top-N analysis, and dynamic DAX measures.
+Identified trends and regional patterns to support data-driven decision-making.
+Presented analytical findings through interactive visualizations for technical and non-technical audiences.
+LashLens – AI Makeup Recommendation System
+Technologies / Skills: Python • OpenCV • CNN • Angular
+Built a CNN model for image classification using TensorFlow.
+Applied image preprocessing and feature engineering techniques.
+Evaluated model performance using machine learning metrics.
+Developed a user interface for real-time prediction and visualization.
+PUBLICATION
+LashLens: An Intelligent System for Makeup Recommendation
+Accepted and presented at the 12th International Conference on Computer Science and Information Technology (CSIT
+2025).
+Research focused on AI-based facial analysis and intelligent product recommendation systems.
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+2 / 2

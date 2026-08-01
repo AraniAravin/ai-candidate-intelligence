@@ -1,0 +1,111 @@
+Arani Aravinthan
+Software Engineer and MSc Data Science & Artificial Intelligence student with experience developing enterprise web
+applications, REST APIs, databases, and AI-powered solutions. Skilled in React, Angular, Python, SQL, application
+development, workflow automation, and Agile software delivery. Passionate about building user-focused software that
+solves real-world business problems. 
+✉ araniaravin16@gmail.com
+📞 0503532764
+📍 Dubai, UAE
+SKILLS
+Programming
+Python • JavaScript • Java • SQL • C++
+Web Development
+React • Angular • HTML5 • CSS3 • Node.js • .NET Core • REST APIs
+Databases
+MySQL • Oracle • SQL Server
+AI & Automation
+Generative AI • Agentic AI • TensorFlow • OpenCV • Scikit-learn • AI Productivity Tools
+Cloud & DevOps
+Azure • Azure DevOps • Docker • Git • Terraform • RabbitMQ
+Data & Analytics
+Power BI • Excel • DAX • Pandas • NumPy
+Methodologies
+Agile • Scrum • API Integration • Software Testing • UI Development • Documentation
+WORK EXPERIENCE
+Tech Unicorn - Dubai, UAE
+Project Management Intern
+April 2026 
+Coordinated software development activities across developers, testers, and stakeholders using Azure DevOps and Microsoft
+Teams.
+Assisted in testing web and desktop applications by validating new features and documenting software defects.
+Worked with software teams to monitor feature delivery, application workflows, and release readiness.
+Helped organize technical documentation, sprint artifacts, and project tracking dashboards.
+Collaborated with cross-functional teams to improve communication between technical and non-technical stakeholders.
+Scienter Technologies (Pvt) Ltd
+Associate Software Engineer
+Jun 2024 – Apr 2025 
+Built and enhanced enterprise web applications using Angular, .NET Core, SQL, and REST APIs.
+Worked closely with QA, business analysts, and end users to translate business requirements into software features.
+Designed database queries and optimized SQL operations for improved system performance.
+Debugged production issues and implemented reliable software fixes across enterprise systems.
+Collaborated with cross-functional teams using Agile Scrum methodologies.
+Software Engineering Intern
+Jun 2023 – Jun 2024 
+Supported the development, implementation, testing, and maintenance of enterprise software applications.
+Contributed to software development tasks and supported the implementation of assigned functional requirements.
+Worked with existing application components to understand system functionality and support application improvements.
+Collaborated with development and QA teams throughout software development and delivery activities.
+Participated in Agile ceremonies, sprint planning, and team coordination activities.
+Used Git and TFS as part of the software development and version control workflow.
+Prepared and maintained technical documentation and project records.
+Collaborated with senior developers and cross-functional teams to support successful software delivery.
+EDUCATION
+Middlesex University Dubai
+MSc Data Science & Artificial Intelligence (Part-Time)
+Jan 2026 
+University of Central Lancashire
+Bachelor of Software Engineering
+March 2022 – May 2025 
+First Class Honors (77.4% APM)
+Gold Medalist
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+
+PROJECTS
+LashLens – AI Makeup Recommendation System
+Technologies: Python, OpenCV, CNN, Angular
+Designed and developed a full-stack AI-powered web application using Angular and Python.
+Built an intuitive user interface for image upload and recommendation generation.
+Integrated computer vision models with frontend workflows to deliver real-time recommendations.
+Focused on creating a simple and user-friendly application experience.
+Student Management System
+Technologies: React • Node.js • SQL
+Designed a web-based management system for students, tutors, schedules, and attendance.
+Implemented CRUD operations using REST APIs.
+Developed a relational database for student and tutor records.
+Built responsive dashboards for managing users and sessions.
+Focused on clean UI and intuitive workflows.
+PUBLICATION
+LashLens: An Intelligent System for Makeup Recommendation
+Accepted and presented at the 12th International Conference on Computer Science and Information Technology (CSIT
+2025).
+Research focused on AI-based facial analysis and intelligent product recommendation systems.
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 
+• 

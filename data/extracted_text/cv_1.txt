@@ -1,0 +1,111 @@
+Arani Aravinthan
+Software Engineer and MSc Data Science & Artificial Intelligence student with strong expertise in Business 
+Intelligence, Power BI, SQL, and data analytics. Experienced in designing interactive dashboards, developing 
+advanced DAX measures, performing data modeling using star schema principles, and transforming complex 
+datasets into actionable business insights. Skilled in KPI reporting, healthcare analytics, SQL optimization, and 
+building scalable reporting solutions that support strategic decision-making. Passionate about leveraging data 
+visualization and analytics to improve organizational performance.
+araniaravin16@gmail.com
+0503532764
+Dubai, UAE
+SKILLS
+Business Intelligence
+• Power BI Desktop
+• Power BI Service
+• DAX
+• Power Query
+• Data Modeling
+• Dashboard Development
+• KPI Reporting
+• Drill-through Reports
+• Interactive Reports
+• Executive Dashboards
+• Data Visualization
+Databases
+• SQL
+• MySQL
+• Oracle
+• Database Design
+• Query Optimization
+• Data Validation
+Analytics
+• Statistical Analysis
+• Data Analysis
+• ETL
+• Data Cleaning
+• Data Transformation
+• Business Intelligence
+• Predictive Analytics
+Power BI Modeling
+• Star Schema
+• Relationship Management
+• Fact & Dimension Tables
+• Calculated Columns
+• Measures
+• Row-Level Security (if you've learned it)
+• Performance Optimization
+WORK EXPERIENCE
+Tech Unicorn - Dubai, UAE
+Project Management Intern
+April 2026
+• Coordinated software development activities across developers, testers, and stakeholders using Azure 
+DevOps and Microsoft Teams.
+• Assisted in testing web and desktop applications by validating new features and documenting software 
+defects.
+• Worked with software teams to monitor feature delivery, application workflows, and release readiness.
+• Helped organize technical documentation, sprint artifacts, and project tracking dashboards.
+• Collaborated with cross-functional teams to improve communication between technical and non-technical 
+stakeholders.
+
+Scienter Technologies (Pvt) Ltd
+Associate Software Engineer
+Jun 2024 - Apr 2025
+• Optimized complex SQL queries and database operations, improving application performance by up to 30%.
+• Validated backend data using SQL queries to ensure consistency and integrity across enterprise applications.
+• Collaborated with QA and business teams to analyze data issues and support reporting requirements.
+• Worked with relational databases, API data, and enterprise datasets to improve business workflows.
+Software Engineering Intern
+Jun 2023 - Jun 2024
+• Supported the development, implementation, testing, and maintenance of enterprise software applications..
+• Contributed to software development tasks and supported the implementation of assigned functional 
+requirements.
+• Worked with existing application components to understand system functionality and support application 
+improvements.
+• Collaborated with development and QA teams throughout software development and delivery activities.
+• Participated in Agile ceremonies, sprint planning, and team coordination activities.
+• Used Git and TFS as part of the software development and version control workflow.
+• Prepared and maintained technical documentation and project records.
+• Collaborated with senior developers and cross-functional teams to support successful software delivery.
+EDUCATION
+Middlesex University Dubai
+MSc Data Science & Artificial Intelligence (Part-Time)
+Jan 2026
+University of Central Lancashire
+Bachelor of Software Engineering
+March 2022 - May 2025
+• First Class Honors (77.4% APM)
+• Gold Medalist
+PROJECTS
+Global Health Analytics Dashboard
+Power BI • SQL • Python • DAX
+• Designed an end-to-end Business Intelligence dashboard analyzing obesity, diabetes, hypertension, and 
+physical inactivity across multiple countries.
+• Built interactive Power BI dashboards featuring drill-through reports, slicers, bookmarks, KPI cards, and 
+dynamic visualizations.
+• Developed advanced DAX measures, calculated columns, ranking metrics, and time-based analytics.
+• Designed a star schema data model with optimized relationships to improve dashboard performance.
+• Cleaned, transformed, and integrated healthcare datasets using SQL and Python.
+• Applied data modeling best practices to build scalable and reusable semantic datasets.
+• Created executive dashboards enabling comparison of countries, regions, and healthcare indicators.
+• Delivered actionable insights supporting healthcare policy evaluation and data-driven decision making.
+LashLens – AI Makeup Recommendation System
+Technologies: Python, OpenCV, CNN, Angular
+• Designed and developed a full-stack AI-powered web application using Angular and Python.
+• Built an intuitive user interface for image upload and recommendation generation.
+• Integrated computer vision models with frontend workflows to deliver real-time recommendations.
+• Focused on creating a simple and user-friendly application experience.
+PUBLICATION
+LashLens: An Intelligent System for Makeup Recommendation
+• Accepted and presented at the 12th International Conference on Computer Science and Information 
+Technology (CSIT 2025).
+• Research focused on AI-based facial analysis and intelligent product recommendation systems.

@@ -28,3 +28,11 @@ There are various pretrained embedded models to do the vector embeddings on the 
 
 ## Vector Dimensions
 But when we try to match two vectors it needs to be in the same dimenstions also to be passed to cosine similarity
+
+## Day 3 — PDF Text Extraction
+PDF - page description format
+Unlike the other types of text files like docx and .txt which store a linear stream of text, pdfs only store the instructions for where to draw each character, line or image on a page. Therefore extracting the text is harder as it means reconstruction of the text.
+
+PyMuPDF is a python library used to extract, modify or render any text from pdf and if it is a scanned pdf or image the extraction will not work currently and if the layout is not correct the order of the text will get messed
+
+Document Parsing is a way of structuring raw and messy text pulled out from pdf, scanned images or word documents for computers to understand. But in this project that will be done by an LLM as part of the last steps 
