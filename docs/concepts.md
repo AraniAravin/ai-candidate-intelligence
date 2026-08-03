@@ -36,3 +36,15 @@ Unlike the other types of text files like docx and .txt which store a linear str
 PyMuPDF is a python library used to extract, modify or render any text from pdf and if it is a scanned pdf or image the extraction will not work currently and if the layout is not correct the order of the text will get messed
 
 Document Parsing is a way of structuring raw and messy text pulled out from pdf, scanned images or word documents for computers to understand. But in this project that will be done by an LLM as part of the last steps 
+
+## Day 4 — Structured LLM Extraction
+
+Generally when we get outputs from LLMs we get it in a specific format not out desired format getting it in our preferred format is associated with how we write the prompts to get the output from the LLM
+
+In here we are expecting an output in the json structure from the LLM so that we use the json.load() command in python easily to load the model
+
+In the prompt we are giving the role of the LLM and what we are expecting from it as an output and then we give the structure of the outputted elements to be retrieved from the raw text.
+We also make sure to handle edge cases by giving the rules, such as in situations like when we cannot deduce the number of year we return it as null instead of fake numbers, not prediction of data if data does not exist it will be given as null.
+
+The issues faced were in some resume templates though it was in pdf form not all skills got extracted at first and then when the format of the resume with a different layout was given then most skills were extracted, but even withing the CV format some skills are not retrieved and if the skills section name is having synonymous words still the skills are not extracted.
+

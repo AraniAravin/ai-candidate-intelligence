@@ -24,3 +24,9 @@
 - Learned how PDFs store content (drawing instructions, not linear text) and why extraction quality varies by PDF source.
 - Built `backend/pdf_parser.py` using PyMuPDF to extract raw text from PDF CVs and save as `.txt` files.
 - Processed 5 sample CVs. Cvs with different layout format texts get scrambled along the extracted documents and when trying extraction within documents of various languages, languages other than english looks messed and for a page break there is a gibberish display of text before displaying text from the other page and when image of documents are converted to pdf and extraction method tried on it doesnt extract any texts
+
+### Day 4 — Candidate Information Extraction
+- Learned about structured LLM outputs, JSON-constrained prompting, and common failure modes (markdown fences, hallucinated fields).
+- Set up Ollama locally with the llama3.2 model.
+- Built `backend/extract_candidate_info.py`: sends raw CV text to the local LLM and parses structured JSON (name, skills, experience_years, education).
+- Tested on 3 CVs. The output was given exactly as described and all gibberish text of the raw text was omitted and unknown outputs was given as null rather than predicting values
