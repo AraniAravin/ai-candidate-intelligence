@@ -48,3 +48,12 @@ We also make sure to handle edge cases by giving the rules, such as in situation
 
 The issues faced were in some resume templates though it was in pdf form not all skills got extracted at first and then when the format of the resume with a different layout was given then most skills were extracted, but even withing the CV format some skills are not retrieved and if the skills section name is having synonymous words still the skills are not extracted.
 
+## Day 5 — Job Profile Extraction
+
+From Day 1's learning it is confirmed that we do not need a structured output for the JD as it is already compact in size and so we can make embeddings and find the similarity but later on in the project we will be doing skill-overlap match for which we need a set of skills to match with the candidate skills and not just plain vectors are enough for it.
+
+Both semantic matching and explicit matching will be required later when we start building a dashboard.
+
+An issue was found with the earlier prompt where the bonus skills were also found to be considered as required skills by the LLM and therefore the prompt was modified to handle edge cases and consider any bonus or preferred skills as it is and another change was found when the LLM considered soft tone skills as preferred so that was also handled.
+
+Some real LinkedIn JD was tested out, it gave out adequate but not very impressive results, when the format of the JD was changed some skills which are not mentioned under any 'skills' heading was not considered a skill

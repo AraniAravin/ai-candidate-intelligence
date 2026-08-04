@@ -30,3 +30,9 @@
 - Set up Ollama locally with the llama3.2 model.
 - Built `backend/extract_candidate_info.py`: sends raw CV text to the local LLM and parses structured JSON (name, skills, experience_years, education).
 - Tested on 3 CVs. The output was given exactly as described and all gibberish text of the raw text was omitted and unknown outputs was given as null rather than predicting values
+
+### Day 5 — Job Description Extraction
+- Applied the same LLM extraction pattern from Day 4 to job descriptions.
+- Built `backend/extract_job_info.py`: extracts role, required_skills, and experience_required as structured JSON.
+- Tested on some job descriptions across different roles and some JD copied from LinkedIn.
+- An issue was spotted with bonus skills where if any preferaable skills are included they are noted down as required skills, it will be handled by optimising the prompt and providing the LLM instructions on how to handle the case explicitly and also being careful about the tone of the description. 
