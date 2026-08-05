@@ -57,3 +57,11 @@ Both semantic matching and explicit matching will be required later when we star
 An issue was found with the earlier prompt where the bonus skills were also found to be considered as required skills by the LLM and therefore the prompt was modified to handle edge cases and consider any bonus or preferred skills as it is and another change was found when the LLM considered soft tone skills as preferred so that was also handled.
 
 Some real LinkedIn JD was tested out, it gave out adequate but not very impressive results, when the format of the JD was changed some skills which are not mentioned under any 'skills' heading was not considered a skill
+
+## Day 6 — End-to-End Pipeline
+
+All the functionalities implemented in the beginning of the week was incorporated into one pipeline to do the task of CV ranking. Where the CV raw text was extracted and embeddings was calculated for them and then embeddings was created for JD and similarity score found using cosine similarity and candidates were ranked based on that.
+
+The JSON structure extracted was not put to use in this pipeline, as for embedding the raw text is only necessary, but it was experimented as it will be necessary for skills matching in the later weeks.
+
+Already created functions from other modules were imported and used in the pipeline as it is an easier way of managing the system design than redundantly repeating code within the same project.

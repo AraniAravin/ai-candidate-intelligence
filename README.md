@@ -36,3 +36,15 @@
 - Built `backend/extract_job_info.py`: extracts role, required_skills, and experience_required as structured JSON.
 - Tested on some job descriptions across different roles and some JD copied from LinkedIn.
 - An issue was spotted with bonus skills where if any preferaable skills are included they are noted down as required skills, it will be handled by optimising the prompt and providing the LLM instructions on how to handle the case explicitly and also being careful about the tone of the description. 
+
+### Day 6 — Full Semantic Matching Pipeline
+- Combined Days 1–5 into `backend/pipeline.py`: an end-to-end pipeline
+  that takes a job description and multiple CV PDFs, and returns
+  candidates ranked by semantic similarity.
+- Tested against 4 CVs and different job descriptions for various roles.
+- Confirmed rankings shift sensibly when the job description changes.
+
+## 🎯 Week 1 Milestone — Complete
+Built the core AI component: Job Description + CV → Embedding →
+Semantic Similarity → Ranked Match Score. Fully working locally,
+no external API dependency (uses local sentence-transformers model).
