@@ -65,3 +65,15 @@ All the functionalities implemented in the beginning of the week was incorporate
 The JSON structure extracted was not put to use in this pipeline, as for embedding the raw text is only necessary, but it was experimented as it will be necessary for skills matching in the later weeks.
 
 Already created functions from other modules were imported and used in the pipeline as it is an easier way of managing the system design than redundantly repeating code within the same project.
+
+## Day 7 - Review Work Done in Week 1 
+A good understanding of how semantic similarity works and how the CV text and JD will be compared should verified.
+
+## Day 8 — Vector Databases & Qdrant
+A Vector DB is a way of storing data where the retrieval does not require exact texts to match but the meaning. DBs like PostgreSQL and MySql store structured data and the retrieval of the data requires exact keyword mathces, but in QDrant which is the vector DB used here we store the vectors of the content needed to be stored (CV text) and pass the JD embedding to match the results to be retrieved from the Vec Db, in that way we dont just match keywords but search for the meaning of the word.
+
+When pulling data from the DB, we pass a limit to QDrant to return top x number of candidates who match the JD, which is called top-K retrieval. What QDrant does here is take both the JD and CV vectors stored in that collection and compute their similarity and rank the results based on the scores and return the top K results 
+
+In Vec Db collections are like tables of a traditional Db, and points are like rows of the table, representing one entry in the data structure and payload is a extra meta data stored along side the vector, this is a human readable form of the data stored and why we need is unless this exists QDrant is not aware what data it is passing over.
+
+Also remember that Qdrant API expects plain lists only not numpy and upsert means insert or update

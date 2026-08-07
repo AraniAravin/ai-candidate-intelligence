@@ -48,3 +48,12 @@
 Built the core AI component: Job Description + CV → Embedding →
 Semantic Similarity → Ranked Match Score. Fully working locally,
 no external API dependency (uses local sentence-transformers model).
+
+### Day 8 — Vector Database (Qdrant)
+- Learned why vector databases exist separately from relational DBs —
+  similarity search via indexing (e.g., HNSW) vs exact-match queries.
+- Ran Qdrant locally via Docker with a persistent volume.
+- Built `backend/vector_store.py`: stores candidate embeddings in Qdrant
+  and performs top-K similarity search.
+- Verified Qdrant's search results match my Day 6 brute-force cosine
+  similarity implementation — confirms correctness, not just speed.
