@@ -1,7 +1,6 @@
 """
 vector_store.py
-Stores candidate embeddings in Qdrant and performs similarity search
-for top-K candidate retrieval.
+Qdrant integration: insert, search, and delete candidate embeddings.
 """
 
 from pathlib import Path
@@ -17,7 +16,7 @@ VECTOR_SIZE = 384  # matches all-MiniLM-L6-v2's output dimension
 
 client = QdrantClient(host="localhost", port=6333)
 
-# this method checks if a collection exists or not and if not creates a collection 
+# A create table in the database function
 def create_collection() -> None:
     """Create the candidates collection if it doesn't already exist."""
     existing = [c.name for c in client.get_collections().collections]
@@ -27,13 +26,12 @@ def create_collection() -> None:
 
     client.create_collection(
         collection_name=COLLECTION_NAME,
-        #vector format configuration
         vectors_config=VectorParams(size=VECTOR_SIZE, distance=Distance.COSINE),
     )
     print(f"Created collection '{COLLECTION_NAME}'.")
 
-
-def store_candidate(point_id: int, name: str, cv_text: str) -> None:
+# Insert data to the table function
+def insert_candidate(point_id: int, name: str, cv_text: str) -> None:
     """Embed a candidate's CV text and upsert it into Qdrant."""
     embedding = get_embedding(cv_text)
 
@@ -44,9 +42,10 @@ def store_candidate(point_id: int, name: str, cv_text: str) -> None:
     )
 
     client.upsert(collection_name=COLLECTION_NAME, points=[point])
+    print(f"Inserted candidate '{name}' (id={point_id})")
 
-
-def search_candidates(query_text: str, top_k: int = 3):
+# search for a data in the table function
+def search_candidates(query_text: str, top_k: int = 3) -> list[tuple[str, float]]:
     """Search for the top-K most similar candidates to a query."""
     query_embedding = get_embedding(query_text)
 
@@ -58,6 +57,21 @@ def search_candidates(query_text: str, top_k: int = 3):
 
     return [(hit.payload["name"], round(hit.score, 4)) for hit in results]
 
+# delete a data in the table function
+def delete_candidate(point_id: int) -> None:
+    """Delete a candidate point from the collection by ID."""
+    client.delete(
+        collection_name=COLLECTION_NAME,
+        points_selector=[point_id],
+    )
+    print(f"Deleted candidate (id={point_id})")
+
+# check if a particular data exists before deleting
+def candidate_exists(point_id: int) -> bool:
+    """Check whether a point with the given ID currently exists."""
+    result = client.retrieve(collection_name=COLLECTION_NAME, ids=[point_id])
+    return len(result) > 0
+
 
 if __name__ == "__main__":
     create_collection()
@@ -68,17 +82,23 @@ if __name__ == "__main__":
     if not cv_paths:
         print(f"No CVs found in {cv_dir}.")
     else:
-        print(f"Storing {len(cv_paths)} candidates in Qdrant...\n")
+        print(f"Inserting {len(cv_paths)} candidates...\n")
         for i, cv_path in enumerate(cv_paths, start=1):
             cv_text = extract_text_from_pdf(str(cv_path))
-            candidate_name = cv_path.stem
-            store_candidate(point_id=i, name=candidate_name, cv_text=cv_text)
-            print(f"Stored: {candidate_name}")
+            insert_candidate(point_id=i, name=cv_path.stem, cv_text=cv_text)
 
-        query = "We are hiring a Python backend developer with experience building REST APIs using FastAPI. Experience with PostgreSQL and Docker is required."
+        query = "Python AI Engineer"
         print(f"\nSearching for: \"{query}\"\n")
-        results = search_candidates(query, top_k=3)
+        for name, score in search_candidates(query, top_k=3):
+            print(f"{name} — {score}")
 
-        print("Top matches:")
-        for name, score in results:
+        # Demonstrate delete on the last-inserted candidate
+        last_id = len(cv_paths)
+        print(f"\nDeleting candidate id={last_id} to test delete_candidate()...")
+        print(f"Exists before delete: {candidate_exists(last_id)}")
+        delete_candidate(last_id)
+        print(f"Exists after delete: {candidate_exists(last_id)}")
+
+        print(f"\nSearching again after delete: \"{query}\"\n")
+        for name, score in search_candidates(query, top_k=3):
             print(f"{name} — {score}")

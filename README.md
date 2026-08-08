@@ -57,3 +57,10 @@ no external API dependency (uses local sentence-transformers model).
   and performs top-K similarity search.
 - Verified Qdrant's search results match my Day 6 brute-force cosine
   similarity implementation — confirms correctness, not just speed.
+
+  ### Day 9 — Qdrant CRUD Interface
+- Extended `vector_store.py` from Day 8 into a full insert/search/delete
+  interface, matching the shape backend routes will call directly.
+- Verified full lifecycle: insert → search → delete → confirm removal → search again.
+- When deleteting a non existent ID from QDrant, it does nor throw an error instead it just throws a acknwoledged status (here it will be False) as Qdrant delete() operation is idempotent so the whole purpose of it to to make sure the id not does exist now than if it ever existed before, so to avoid any edge case issue we have a function called candidate_exists() to check if the candidate ever existed.
+- ID Strategy for the week will be once a structured DB like postgresql is created and candidate details will be stored in it firstly, generating a unique primary key for each record, which will be a single source of truth for IDs, which will be stored as the point number for the vector in QDrant in that way the data in both the DB can be kept on sync and no more manual working on it

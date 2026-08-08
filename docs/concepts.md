@@ -70,10 +70,35 @@ Already created functions from other modules were imported and used in the pipel
 A good understanding of how semantic similarity works and how the CV text and JD will be compared should verified.
 
 ## Day 8 — Vector Databases & Qdrant
-A Vector DB is a way of storing data where the retrieval does not require exact texts to match but the meaning. DBs like PostgreSQL and MySql store structured data and the retrieval of the data requires exact keyword mathces, but in QDrant which is the vector DB used here we store the vectors of the content needed to be stored (CV text) and pass the JD embedding to match the results to be retrieved from the Vec Db, in that way we dont just match keywords but search for the meaning of the word.
 
+## what is a vector DB
+A Vector DB is a way of storing data where the retrieval does not require exact texts to match but the meaning. DBs like PostgreSQL and MySql store structured data and the retrieval of the data requires exact keyword mathces, but in QDrant which is the vector DB used here we store the vectors of the content needed to be stored (CV text) and pass the JD embedding to match the results to be retrieved from the Vec Db, in that way we dont just match keywords but search for the meaning of the word.
+## What is top K retrieval
 When pulling data from the DB, we pass a limit to QDrant to return top x number of candidates who match the JD, which is called top-K retrieval. What QDrant does here is take both the JD and CV vectors stored in that collection and compute their similarity and rank the results based on the scores and return the top K results 
 
 In Vec Db collections are like tables of a traditional Db, and points are like rows of the table, representing one entry in the data structure and payload is a extra meta data stored along side the vector, this is a human readable form of the data stored and why we need is unless this exists QDrant is not aware what data it is passing over.
 
 Also remember that Qdrant API expects plain lists only not numpy and upsert means insert or update
+
+## Day 9 — Vector DB CRUD
+
+## Why do we need an interface structure?
+Why we have this interface structure is, for the vector_store.py to act as a service module and this is the structure compliant with FastAPI which will come into the picture next week as its routers will call the necessary functions, a router handler receiving an upload will call the insert_candidate() etc.
+
+## What is the plan for ID later..
+The plan for IDs for the week will be once a structured Db like postgresql is created and candidate details will be stored in it firstly, generating a unique primary key for each record, which will be a single source of truth for IDs, which will be stored as the point number for the vector in QDrant in that way the data in both the DB can be kept on sync and no more manual working on it - 
+The Problem we are trying to solve here is if we run the script everytime for the data to be stored or deleted, and suppose two people upload their CVs twice and the data gets overwritten (further discussed in debugging stage below) to avoid this edge case we are using this approach.
+
+## Debugging Results
+when trying to insert the same id for the point numbers I expected same number to get inserted but the actual results were the data was getting overwritten and previously inputted data getting pushed back like data gets overwritten to 1 and previous data go like 2.. 3...
+
+When considering the file of documents in a folder this is now the name split works
+cv_path = Path("data/cvs/john_doe_resume.pdf")
+cv_path.name → "john_doe_resume.pdf" (full filename with extension)
+cv_path.stem → "john_doe_resume" (filename without the extension)
+cv_path.suffix → ".pdf" (just the extension)
+
+And why delete operation matters here is in case a recruiter decides to delete a JD or a candidate withdraws a CV it should be withdrawn from the DB as well
+
+As we have done in Day 6 approach at that point state management (insert/update/delete) is not necessary as we recompute everthing from scratch each time. But as data grows we cannot do this all the time, so real databases seperate computation from storage, data is persistent there and that is why we need CRUD Operations as reliable primitives rather than smthing you improve using python lists.
+
