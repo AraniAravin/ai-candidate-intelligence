@@ -64,3 +64,12 @@ no external API dependency (uses local sentence-transformers model).
 - Verified full lifecycle: insert → search → delete → confirm removal → search again.
 - When deleteting a non existent ID from QDrant, it does nor throw an error instead it just throws a acknwoledged status (here it will be False) as Qdrant delete() operation is idempotent so the whole purpose of it to to make sure the id not does exist now than if it ever existed before, so to avoid any edge case issue we have a function called candidate_exists() to check if the candidate ever existed.
 - ID Strategy for the week will be once a structured DB like postgresql is created and candidate details will be stored in it firstly, generating a unique primary key for each record, which will be a single source of truth for IDs, which will be stored as the point number for the vector in QDrant in that way the data in both the DB can be kept on sync and no more manual working on it
+
+### Day 10 — RAG Fundamentals
+- Learned the Retrieval-Augmented Generation pattern: retrieve relevant
+  data (Qdrant), inject as context (augmentation), generate a grounded
+  answer (LLM) — and that RAG is an architecture pattern, not a new tool.
+- Built `backend/rag_chat.py`, reusing `search_candidates()` from Day 9
+  and Ollama from Day 4.
+- When the context got enriched like adding the cv_text to it the results produced changed and more validation in the output given was seen comparative to before where no justification was given.
+- When a question with no match was given it handled it well by making sure the answer is not fake and to one side and makes sure not enough details is given for the role and it isnt sure of the answer.

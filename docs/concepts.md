@@ -102,3 +102,25 @@ And why delete operation matters here is in case a recruiter decides to delete a
 
 As we have done in Day 6 approach at that point state management (insert/update/delete) is not necessary as we recompute everthing from scratch each time. But as data grows we cannot do this all the time, so real databases seperate computation from storage, data is persistent there and that is why we need CRUD Operations as reliable primitives rather than smthing you improve using python lists.
 
+## Day 10 — RAG (Retrieval-Augmented Generation)
+[Your own words: what each of the three words means, why grounding
+reduces hallucination, and the difference you observed between thin
+context (just scores) and richer context (actual CV text)]
+
+R - Retrieval - pulling the necessary context from a vector database 
+A - Augmented - passing it to the LLM for knowledge
+G - Generation - the output will be generated with the augmented context without hallucinations
+
+Remember RAG is an architecture of operation
+
+## Why Grounding reduces hallucination?
+without grounding the LLM will hallucinate over something it doesnt know so this technique provides the materials for it to look into and answer 
+
+## Difference between thin context and richer context
+When cv text was passed in as context to the LLM prompt a richer output was produced with justification of why a candidate is better suiting than another and a critical evaluation between candidates and who suits the role more. 
+Moreover, the results produced with different contexts were different, there is a difference of candidates chosen depending on the context.
+
+## Debugging
+When asking the same question 2 times the answer given is the same and the scores generated are also same which is expected as we compute the cosine similarity using the same formula and the LLM will use the scores to clasify the ranking
+
+While tracing the LLM output with the given text two outcomes were found firstly there isnt much context given just the scores and so the LLM only speaks abt the scores which is expected no hallucination there. Secondly when passing the cv text and getting the LLM output most of the details stated are able to be traced and therefore it confirms that the LLM is only speaking the details it knows and grounding works well here and no imaginary text

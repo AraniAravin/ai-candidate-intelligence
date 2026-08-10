@@ -55,7 +55,11 @@ def search_candidates(query_text: str, top_k: int = 3) -> list[tuple[str, float]
         limit=top_k,
     ).points
 
-    return [(hit.payload["name"], round(hit.score, 4)) for hit in results]
+    # return [(hit.payload["name"], round(hit.score, 4)) for hit in results]
+    return [
+        (hit.payload["name"], round(hit.score, 4), hit.payload.get("cv_text", ""))
+        for hit in results
+    ]
 
 # delete a data in the table function
 def delete_candidate(point_id: int) -> None:
