@@ -91,18 +91,18 @@ if __name__ == "__main__":
             cv_text = extract_text_from_pdf(str(cv_path))
             insert_candidate(point_id=i, name=cv_path.stem, cv_text=cv_text)
 
-        query = "Python AI Engineer"
+        query = "Python Backend Engineer"
         print(f"\nSearching for: \"{query}\"\n")
-        for name, score in search_candidates(query, top_k=3):
+        for name, score,cv_text in search_candidates(query, top_k=3):
             print(f"{name} — {score}")
 
         # Demonstrate delete on the last-inserted candidate
         last_id = len(cv_paths)
         print(f"\nDeleting candidate id={last_id} to test delete_candidate()...")
         print(f"Exists before delete: {candidate_exists(last_id)}")
-        delete_candidate(last_id)
+        #delete_candidate(last_id)
         print(f"Exists after delete: {candidate_exists(last_id)}")
 
         print(f"\nSearching again after delete: \"{query}\"\n")
-        for name, score in search_candidates(query, top_k=3):
+        for name, score,cv_text in search_candidates(query, top_k=3):
             print(f"{name} — {score}")

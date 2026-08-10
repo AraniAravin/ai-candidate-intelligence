@@ -73,3 +73,15 @@ no external API dependency (uses local sentence-transformers model).
   and Ollama from Day 4.
 - When the context got enriched like adding the cv_text to it the results produced changed and more validation in the output given was seen comparative to before where no justification was given.
 - When a question with no match was given it handled it well by making sure the answer is not fake and to one side and makes sure not enough details is given for the role and it isnt sure of the answer.
+
+### Day 11 — Working RAG Pipeline
+- Extended Day 10's generic RAG into targeted RAG: given a known
+  candidate and job, directly retrieves that candidate's full CV data
+  (not a similarity search) and generates a grounded explanation.
+- Explanation is tied to the same semantic score used in ranking,
+  so the "why" is consistent with the actual match score shown elsewhere.
+- Verified explanations reference real CV content and handle poor-fit
+  candidates honestly rather than overselling them.
+- Known limitation: candidate lookup uses a full collection scroll —
+  fine at current scale, will need proper filtering/indexing once
+  PostgreSQL candidate IDs are wired in.

@@ -44,8 +44,8 @@ def rank_candidates(job_description: str, cv_paths: list[str]) -> list[tuple[str
 if __name__ == "__main__":
     job_description = """
     We are hiring a Python backend developer with experience building
-    REST APIs using FastAPI. Experience with PostgreSQL and Docker
-    is required.
+        REST APIs using FastAPI. Experience with PostgreSQL and Docker
+        is required.
     """
 
     cv_dir = Path("data/sample_cvs")

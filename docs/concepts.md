@@ -103,10 +103,6 @@ And why delete operation matters here is in case a recruiter decides to delete a
 As we have done in Day 6 approach at that point state management (insert/update/delete) is not necessary as we recompute everthing from scratch each time. But as data grows we cannot do this all the time, so real databases seperate computation from storage, data is persistent there and that is why we need CRUD Operations as reliable primitives rather than smthing you improve using python lists.
 
 ## Day 10 — RAG (Retrieval-Augmented Generation)
-[Your own words: what each of the three words means, why grounding
-reduces hallucination, and the difference you observed between thin
-context (just scores) and richer context (actual CV text)]
-
 R - Retrieval - pulling the necessary context from a vector database 
 A - Augmented - passing it to the LLM for knowledge
 G - Generation - the output will be generated with the augmented context without hallucinations
@@ -124,3 +120,24 @@ Moreover, the results produced with different contexts were different, there is 
 When asking the same question 2 times the answer given is the same and the scores generated are also same which is expected as we compute the cosine similarity using the same formula and the LLM will use the scores to clasify the ranking
 
 While tracing the LLM output with the given text two outcomes were found firstly there isnt much context given just the scores and so the LLM only speaks abt the scores which is expected no hallucination there. Secondly when passing the cv text and getting the LLM output most of the details stated are able to be traced and therefore it confirms that the LLM is only speaking the details it knows and grounding works well here and no imaginary text
+
+## Day 11 — Targeted RAG vs Generic RAG
+
+We have two different retrieval pattern in this project:
+1. Open ended similarity search - pass a question and ask Qdrant to search for a similar candidate
+2. Direct retrieval - what we have done for the day pass the name of the candidate and ask Qdrant to retrieve
+
+In this context we are passing the question with the answer and asking for an explanation from the LLM, for which a similarity search is not necessary as in the previous week we have already done the semantic search where we pass the question to the vector DB which searches the matching candiates for the whole here all we need is the explanation so we dont need to search meaning but instead the data itself like how we do in traditional SQL servers
+
+When a poor candidate is tested the LLM is honest with its answer and provides a justification for its results.
+
+## Debuggings
+
+Right now for the direct retrieval logic from QDrant what we do is use 'client.scroll(limit=1000)' in the search candidate by name function, which pulls over 1000 matching candidates over to the script and then manually loop through them to find the right match, which is actually a poor implementation as it contradicts with the whole idea of using a vecDB as we bring in the whole brute-force Python loop logic again which was meant to be resolved by Qdrant from day 8 as it has proper mechanism to find the exactly listed points, currently it wont be an issue for 5 10 candidates but when it grows to 1000s it will cause a scaling issue (redundancy huge unnecessary data over the network and CPU cycle). 
+So why we are doing this right now is until we introduce postgresql which is the real retriever of direct data we have this as a option as we do not want to repeat the same logic for both the DB.
+
+When testing a poor fit candidate for the role the LLM is being honest and listing out the missing skills and what the candidate is good at.
+
+The scores shown in the day 6s work, where we compute the cosine similarity for each candidate and the title is matching with the output of the LLM for the high ranked candidates it gives a positive response and else if gives out why they are not a good fit, it is expected as if the texts are matching only the similarity rate will be high and matching.
+
+When we ask for details about a non existent candidate the answer is no match found which is expected
