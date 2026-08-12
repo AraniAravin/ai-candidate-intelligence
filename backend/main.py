@@ -107,33 +107,80 @@ async def upload_candidates(files: list[UploadFile] = File(...)):
     return {"uploaded": saved}
 
 
+# @app.post("/candidates/analyze")
+# def analyze_candidates():
+#     """
+#     Process all uploaded-but-not-yet-analyzed candidates:
+#     extract text, extract structured info, embed, and store in Qdrant.
+#     """
+#     processed = []
+
+#     for candidate_id, record in candidates_db.items():
+#         if record["status"] != "uploaded":
+#             continue
+
+#         cv_text = extract_text_from_pdf(record["path"])
+#         info = extract_candidate_info(cv_text)
+
+#         insert_candidate(
+#             point_id=candidate_id,
+#             name=info.get("name") or record["filename"],
+#             cv_text=cv_text,
+#         )
+
+#         record["status"] = "analyzed"
+#         record["extracted_info"] = info
+#         processed.append({"id": candidate_id, "info": info})
+
+#     return {"processed": processed}
 @app.post("/candidates/analyze")
 def analyze_candidates():
-    """
-    Process all uploaded-but-not-yet-analyzed candidates:
-    extract text, extract structured info, embed, and store in Qdrant.
-    """
     processed = []
+    failed = []
 
     for candidate_id, record in candidates_db.items():
         if record["status"] != "uploaded":
             continue
+        record["status"] = "processing"
 
-        cv_text = extract_text_from_pdf(record["path"])
-        info = extract_candidate_info(cv_text)
+        try:
+            cv_text = extract_text_from_pdf(record["path"])
+            if not cv_text.strip():
+                raise ValueError("Extracted text is empty (possibly a scanned/image PDF)")
+            info = extract_candidate_info(cv_text)
 
-        insert_candidate(
-            point_id=candidate_id,
-            name=info.get("name") or record["filename"],
-            cv_text=cv_text,
-        )
+            insert_candidate(
+                point_id=candidate_id,
+                name=info.get("name") or record["filename"],
+                cv_text=cv_text,
+            )
 
-        record["status"] = "analyzed"
-        record["extracted_info"] = info
-        processed.append({"id": candidate_id, "info": info})
+            record["status"] = "analyzed"
+            record["extracted_info"] = info
+            processed.append({"id": candidate_id, "info": info})
 
-    return {"processed": processed}
+        except Exception as e:
+            record["status"] = "failed"
+            record["failure_reason"] = str(e)
+            failed.append({"id": candidate_id, "filename": record["filename"], "reason": str(e)})
 
+    return {"processed": processed, "failed": failed}
+
+@app.get("/candidates/status")
+def get_candidates_status():
+    """Return the current status of every uploaded candidate — useful for
+    checking processing progress without re-running analyze."""
+    return {
+        "candidates": [
+            {
+                "id": cid,
+                "filename": record["filename"],
+                "status": record["status"],
+                "failure_reason": record.get("failure_reason"),
+            }
+            for cid, record in candidates_db.items()
+        ]
+    }
 
 @app.post("/chat", response_model=ChatResponse)
 def chat(request: ChatRequest):

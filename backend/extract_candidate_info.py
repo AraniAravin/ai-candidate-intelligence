@@ -61,7 +61,7 @@ def extract_candidate_info(cv_text: str) -> dict:
     """
     prompt = EXTRACTION_PROMPT_TEMPLATE.format(cv_text=cv_text)
 
-    response = ollama.generate(model=MODEL_NAME, prompt=prompt)
+    response = ollama.generate(model=MODEL_NAME, prompt=prompt,options={"num_predict": 512})
     raw_output = response["response"]
 
     cleaned = clean_json_response(raw_output)
