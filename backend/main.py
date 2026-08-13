@@ -4,6 +4,7 @@ FastAPI application wiring together the AI pipeline built in Weeks 1-2.
 """
 
 from fastapi import FastAPI, UploadFile, File
+from fastapi import HTTPException
 from pydantic import BaseModel
 from pathlib import Path
 import shutil
@@ -53,7 +54,13 @@ class ChatRequest(BaseModel):
 
 class ChatResponse(BaseModel):
     answer: str
+class RankedCandidate(BaseModel):
+    name: str
+    score: float
 
+class RankingResponse(BaseModel):
+    job_id: int
+    ranked_candidates: list[RankedCandidate]
 
 # ---------- Endpoints ----------
 
@@ -181,6 +188,24 @@ def get_candidates_status():
             for cid, record in candidates_db.items()
         ]
     }
+
+
+@app.get("/jobs/{job_id}/ranked-candidates", response_model=RankingResponse)
+def rank_candidates_for_job(job_id: int, top_k: int = 5):
+    """
+    Rank analyzed candidates against a job description using
+    semantic similarity search in Qdrant.
+    """
+    if job_id not in jobs_db:
+        raise HTTPException(status_code=404, detail=f"Job {job_id} not found")
+
+    job = jobs_db[job_id]
+    results = search_candidates(job["description"], top_k=top_k)
+
+    ranked = [{"name": name, "score": score,"cv_text":cv_text} for name, score,cv_text in results]
+
+    return {"job_id": job_id, "ranked_candidates": ranked}
+
 
 @app.post("/chat", response_model=ChatResponse)
 def chat(request: ChatRequest):

@@ -173,3 +173,21 @@ Earlier when we did not check if the extracted text from candidates really did e
 In the /candidates/analyze endpoint we have a status check 'if record["status"] != "uploaded": continue' which was added to avoid reanalysing candidates we have already analysed but then this also skips retrying candidates who have failed already, two options exists one is implementing a logic asking the candidates to re upload a different file and a much simpler option is to change the if logic so that we retry candidates who have failed before mayb due to a Json truncation issue, which is non deterministic since LLM output varies run to run, or a Qdrant hiccup, FOR NOW THE CHANGE IS NOT MADE
 
 When the DB is down and we send a request the try catch blocks catch the error and handle them well displaying the correct error which shows the robustness of the error handling mechanisms implemented
+
+## Day 14 — Full Pipeline Integration
+Todays final building block was ranking candidates for a specific job description and now the whole pipeline is ready.
+First we have to upload a JB 
+The upload the candidate CVs
+Analyse the candidate CVs and update Vector Databases
+Produce ranking based on specific JDs
+RAG chat - answering questions related to the ranking.
+
+## Debuggings
+When a job id which is non existent and is searched, an empty array is returned currently with no error message which is handled to throw a 404 error and a message indicating the missing job id.
+
+currently there is an issue with uploading CVs and JD there is a word count limitations when we upload a long cv or long description we have json truncation issue that needs to be handled some time soon, mayb we need to handle to thru the model olama
+
+Found a real scoping gap: search_candidates() searches ALL candidates ever inserted into Qdrant, not just ones relevant to a specific job — meaning stale test data from earlier days was polluting rankings.
+Immediate fix: cleared the Qdrant collection to remove stale test data.
+According to the real design it will be a job-scoped search in this scenario so we have to wait till postgresql is wired in to associate a job is to a candidate it, as a permanent fix for this
+

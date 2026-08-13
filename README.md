@@ -115,3 +115,19 @@ no external API dependency (uses local sentence-transformers model).
   being unavailable — confirmed both are caught and recorded rather
   than crashing the request.
 - Currently when a CV is flagged as failed it isnt given a retryn when analysing new uploads, but there is two ways we could handle this one is by changing the workflow to ask the candidates to upload another file if the issue is with the pdf as there isnt a use of retrying then or the other way is by actually implementing the retry logic inside the existing code as it could have happened due to an LLM truncation or Qdrant hiccup it is worth retrying.
+
+### Day 14 — Week 2 Milestone: AI Backend MVP
+- Added `GET /jobs/{job_id}/ranked-candidates`, the final missing piece
+  connecting job descriptions to Qdrant-based candidate ranking.
+- Verified the full pipeline end-to-end through the API:
+  create job → upload CVs → analyze (PDF → text → LLM → embedding → Qdrant)
+  → ranked candidates → RAG chat explanation — all via HTTP, not scripts.
+- When ranking candidates for a job id, all the candidates from the database is compared and ranked not the candidates for that specific job only, it needs to be rendered as a system
+- When a job id which is non existent and is searched, an empty array is returned currently with no error message which is handled to throw a 404 error and a message indicating the missing job id.
+
+## 🎯 Week 2 Milestone — Complete
+The AI Candidate Intelligence Platform backend is now a working MVP:
+a real FastAPI application exposing the full pipeline from your original
+architecture diagram — CV processing, embeddings, vector search, ranking,
+and RAG-based explanation — all through HTTP endpoints with auto-generated
+API docs.

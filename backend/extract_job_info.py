@@ -89,20 +89,27 @@ def extract_job_info(job_text: str) -> dict:
 
 
 if __name__ == "__main__":
-    job_description = """
-    We are hiring an AI Engineer to join our team.
+    job_description = """Mandatory Technical Skills
 
-    Responsibilities include building and deploying machine learning models,
-    working with large language models, and integrating AI features into
-    our backend systems.
+* .NET / C#
+* Python
+* SQL
+* React / Next.js
+* REST APIs & API Integration
+* AI / LLM / AI API Integration
 
-    Requirements:
-    - 2+ years of experience in software engineering or ML
-    - Strong Python skills
-    - Experience with Machine Learning and PyTorch
-    - Familiarity with Docker for deployment
-    - Bonus: experience with FastAPI
-    """
+
+Requirements
+
+* Minimum 2+ years of Full Stack Software Development experience.
+* Strong Functional and Technical knowledge.
+* Ability to understand business processes and independently develop practical software solutions.
+* Strong interest in AI, automation, and emerging technologies.
+* Ability to work with changing requirements and develop flexible solutions.
+* Strong analytical and problem-solving skills.
+* Ability to work independently while collaborating with the Headquarters IT & Intelligence Team.
+* Willingness to learn, experiment, and introduce new technology ideas to the organization.
+"""
 
     print("Processing job description...\n")
     profile = extract_job_info(job_description)
