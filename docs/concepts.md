@@ -125,7 +125,7 @@ While tracing the LLM output with the given text two outcomes were found firstly
 
 We have two different retrieval pattern in this project:
 1. Open ended similarity search - pass a question and ask Qdrant to search for a similar candidate
-2. Direct retrieval - what we have done for the day pass the name of the candidate and ask Qdrant to retrieve
+2. Direct retrieval - what we have done for the day, pass the name of the candidate and ask Qdrant to retrieve
 
 In this context we are passing the question with the answer and asking for an explanation from the LLM, for which a similarity search is not necessary as in the previous week we have already done the semantic search where we pass the question to the vector DB which searches the matching candiates for the whole here all we need is the explanation so we dont need to search meaning but instead the data itself like how we do in traditional SQL servers
 
@@ -141,3 +141,35 @@ When testing a poor fit candidate for the role the LLM is being honest and listi
 The scores shown in the day 6s work, where we compute the cosine similarity for each candidate and the title is matching with the output of the LLM for the high ranked candidates it gives a positive response and else if gives out why they are not a good fit, it is expected as if the texts are matching only the similarity rate will be high and matching.
 
 When we ask for details about a non existent candidate the answer is no match found which is expected
+
+
+## Day 12 — FastAPI Fundamentals
+API is an intermediary layer used for communcation between layers, in this case the FE and BE.
+
+An endpoint is a specific URL path your API responds to, to send or receive data, it calls onto a specific function to get an input and to perform a task and give an output based on it.
+
+HTTP is a set of protocal used when passing data over the internet (Web Request).
+
+Every Web request has a method (kind of action) and path (which resource), web response comes back with a status code (400,500,200) and a body (Json)
+
+Two methods exists here GET is used to receive something from the server and POST is to add something to the server.
+
+Pydantic is a python library used for data validation, it is used to avoid data mismatch errors later and catch them earlier before even running the logic. how it works it by getting the json input and FastAPi validates the format against the defined pydantic model and if it passes validation we are good to go else we get a clear error message instead of crashing deep inside yur function.
+
+Data was getting stored in two forms here one local in-memory data as a python dictionary or list (Job description, Candidates details) and the other to the QDrant (Analysing candidate information and storing them and for direct retrieval of the candidate from the Db for ranking explanation).
+
+## Debuggings
+When the json structure that is being passed as an input for example in the post/jobs api before the function is even called and crashes midway, the error message is thrown, which is the benefit of the pydantic model.
+
+When we try to upload a CV that is non existent there is a error message thrown. 
+
+## Day 13 — Error Handling in a Multi-Step AI Pipeline
+per-item error handling is crucial, if not in cases where one item fails then the rest of the items in the batch is blocked and is not processed after end point crashes, after implementing the try/exception handling and maintaining a list for the failed items it is more easier to keep tract of CVS that failed as we know failure can happen in two ways, when the CV pdf is not proper and next is when we dont get a proper json reponse from the LLM
+
+GET /candidates/status - is very helpful in understanding the status of the CVs uploaded/analysed/failed
+
+Earlier when we did not check if the extracted text from candidates really did extract or not and call for the LLM response, it was not handling edge cases when an image or broken pdf was passed over and was returning an empty json and was storing empty data to the VecDB, now after adding 'cv_text.strip()' function that is handled as only if a proper CV pdf is passed then it gets analysed or is classed as failed doc.
+
+In the /candidates/analyze endpoint we have a status check 'if record["status"] != "uploaded": continue' which was added to avoid reanalysing candidates we have already analysed but then this also skips retrying candidates who have failed already, two options exists one is implementing a logic asking the candidates to re upload a different file and a much simpler option is to change the if logic so that we retry candidates who have failed before mayb due to a Json truncation issue, which is non deterministic since LLM output varies run to run, or a Qdrant hiccup, FOR NOW THE CHANGE IS NOT MADE
+
+When the DB is down and we send a request the try catch blocks catch the error and handle them well displaying the correct error which shows the robustness of the error handling mechanisms implemented

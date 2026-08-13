@@ -85,3 +85,33 @@ no external API dependency (uses local sentence-transformers model).
 - Known limitation: candidate lookup uses a full collection scroll —
   fine at current scale, will need proper filtering/indexing once
   PostgreSQL candidate IDs are wired in.
+
+  ### Day 12 — FastAPI Application
+- Learned core HTTP/API concepts: endpoints, GET vs POST, Pydantic
+  validation, request/response models.
+- Built `backend/main.py`, wiring together every module from Weeks 1-2
+  into a working FastAPI application with 5 endpoints:
+  GET /health, POST /jobs, POST /candidates/upload,
+  POST /candidates/analyze, POST /chat.
+- Verified full flow via FastAPI's auto-generated /docs UI.
+- Known limitation: jobs and candidates are stored in-memory (plain
+  Python dicts) — data does not persist across server restarts.
+  PostgreSQL integration is the next step.
+
+  ## Running the project
+
+1. Start Qdrant: `docker start qdrant-db` (or the `docker run` command from Day 8 if not created yet)
+2. Activate the virtual environment: `venv\Scripts\activate`
+3. Start the API server: `cd backend && uvicorn main:app --reload`
+4. Open http://127.0.0.1:8000/docs to explore and test the API
+
+### Day 13 — Robust AI Pipeline in FastAPI
+- The core PDF → Text → LLM → Embedding → Qdrant chain was already
+  wired in Day 12's `/candidates/analyze` — today focused on making it
+  production-honest: per-candidate error handling so one failure doesn't
+  block the batch, explicit status tracking (uploaded/processing/analyzed/failed),
+  and a new GET /candidates/status endpoint to inspect progress.
+- Tested failure paths deliberately: empty/corrupt PDF, and Qdrant
+  being unavailable — confirmed both are caught and recorded rather
+  than crashing the request.
+- Currently when a CV is flagged as failed it isnt given a retryn when analysing new uploads, but there is two ways we could handle this one is by changing the workflow to ask the candidates to upload another file if the issue is with the pdf as there isnt a use of retrying then or the other way is by actually implementing the retry logic inside the existing code as it could have happened due to an LLM truncation or Qdrant hiccup it is worth retrying.
