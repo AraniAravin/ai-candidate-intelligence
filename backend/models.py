@@ -7,7 +7,7 @@ from sqlalchemy import Column, Integer, String, Float, Text, ForeignKey, DateTim
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
-from .database import Base
+from database import Base
 
 # Many-to-many join table: candidates <-> skills
 candidate_skills = Table(
@@ -16,7 +16,6 @@ candidate_skills = Table(
     Column("candidate_id", Integer, ForeignKey("candidates.id"), primary_key=True),
     Column("skill_id", Integer, ForeignKey("skills.id"), primary_key=True),
 )
-
 
 class Skill(Base):
     __tablename__ = "skills"

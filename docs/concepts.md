@@ -198,3 +198,15 @@ One to many  - like one job connecting to many application
 many to many - like many candidates connecting to many skills, a join table is required for this joining the skill id and candidate id and so it does not have a seperate id 
 
 SQL Alchemy is a python library that allows tables be to be defined as classes called an ORM - Object Relational Mapper, instead of writing raw sql output. You can access fields like candidates.names than writing a select query,is also allows us to connect to the Database and translating our python operations to SQL under the hood
+
+## Day 16 — FastAPI + PostgreSQL Integration
+In the database.py file a get_db() function was added as a dependency injection method, where the fast API calls the method through the Depends(), before the end point runs in that way gets a db session, hands you the session and closes it after wards. This avoids manually opening or closing a db connection in every single route.
+
+Within the skills table, we need to make sure we do not duplicate the skills entered into the table, therefore each time before entering a skill we need to check if it exists and if not insert the skill. This is a common real world database problem called 'create or get'.
+Each time a candidate with similar skills are uploaded they are connected through the candidate skills join table.
+When uploading a CV the data is only inserted to posgresql id created then and when analyzing candidate the rest of the data is added and then the data is added to the vector database, maintaining the same IDs in both db for consistency. 
+
+## Debuggings
+The get_or_create_skill() has a db.flush() instead of db.commit() which other crud operations have, so to push the pending changes to the skills table (every skill gets an id) but not fully commiting as it will be done within the save_extracted_info(), which keeps skill creation and candidate details uploading one atomic transcation, preventing any data being half saved if anything goes wrong in the overall operation.
+
+One debugging pending the pdf failure debugging check that out tommorrrow

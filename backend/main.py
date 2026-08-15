@@ -3,11 +3,17 @@ main.py
 FastAPI application wiring together the AI pipeline built in Weeks 1-2.
 """
 
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, UploadFile, File, Depends
+from sqlalchemy.orm import Session
 from fastapi import HTTPException
 from pydantic import BaseModel
 from pathlib import Path
 import shutil
+
+
+from database import get_db, engine, Base
+import models  # noqa: F401
+import crud
 
 from pdf_parser import extract_text_from_pdf
 from extract_job_info import extract_job_info
@@ -19,6 +25,7 @@ app = FastAPI(title="AI Candidate Intelligence Platform")
 
 # Ensure the Qdrant collection exists when the app starts
 create_collection()
+Base.metadata.create_all(bind=engine)  # safe no-op if tables already exist
 
 UPLOAD_DIR = Path("data/uploaded_cvs")
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
@@ -28,8 +35,19 @@ UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 jobs_db: dict[int, dict] = {}
 next_job_id = 1
 
-candidates_db: dict[int, dict] = {}
-next_candidate_id = 1
+class CandidateResponse(BaseModel):
+    id: int
+    name: str | None
+    status: str
+    skills: list[str] = []
+    experience_years: int | None = None
+    education: str | None = None
+
+    class Config:
+        from_attributes = True
+
+# candidates_db: dict[int, dict] = {}
+# next_candidate_id = 1
 
 
 # ---------- Pydantic models: define request/response shapes ----------
@@ -92,9 +110,9 @@ def create_job(job: JobCreateRequest):
 
 
 @app.post("/candidates/upload")
-async def upload_candidates(files: list[UploadFile] = File(...)):
+async def upload_candidates(files: list[UploadFile] = File(...),db: Session = Depends(get_db),):
     """Upload one or more CV PDFs, save them to disk."""
-    global next_candidate_id
+    #global next_candidate_id
     saved = []
 
     for file in files:
@@ -102,14 +120,15 @@ async def upload_candidates(files: list[UploadFile] = File(...)):
         with open(dest_path, "wb") as f:
             shutil.copyfileobj(file.file, f)
 
-        candidates_db[next_candidate_id] = {
-            "id": next_candidate_id,
-            "filename": file.filename,
-            "path": str(dest_path),
-            "status": "uploaded",
-        }
-        saved.append({"id": next_candidate_id, "filename": file.filename})
-        next_candidate_id += 1
+        # candidates_db[next_candidate_id] = {
+        #     "id": next_candidate_id,
+        #     "filename": file.filename,
+        #     "path": str(dest_path),
+        #     "status": "uploaded",
+        # }
+        candidate = crud.create_candidate(db, filename=file.filename, cv_path=str(dest_path))
+        saved.append({"id": candidate.id, "filename": file.filename})
+        #next_candidate_id += 1
 
     return {"uploaded": saved}
 
@@ -141,53 +160,51 @@ async def upload_candidates(files: list[UploadFile] = File(...)):
 
 #     return {"processed": processed}
 @app.post("/candidates/analyze")
-def analyze_candidates():
+def analyze_candidates(db: Session = Depends(get_db)):
     processed = []
     failed = []
 
-    for candidate_id, record in candidates_db.items():
-        if record["status"] != "uploaded":
-            continue
-        record["status"] = "processing"
+    candidates = db.query(models.Candidate).filter(models.Candidate.status == "uploaded").all()
+
+    for candidate in candidates:
 
         try:
-            cv_text = extract_text_from_pdf(record["path"])
+            cv_text = extract_text_from_pdf(candidate.cv_path)
             if not cv_text.strip():
                 raise ValueError("Extracted text is empty (possibly a scanned/image PDF)")
             info = extract_candidate_info(cv_text)
 
+            candidate = crud.save_extracted_info(db, candidate, cv_text, info)
+
             insert_candidate(
-                point_id=candidate_id,
-                name=info.get("name") or record["filename"],
+                point_id=candidate.id,
+                name=candidate.name or Path(candidate.cv_path).stem,
                 cv_text=cv_text,
             )
 
-            record["status"] = "analyzed"
-            record["extracted_info"] = info
-            processed.append({"id": candidate_id, "info": info})
+            processed.append({"id": candidate.id, "name": candidate.name})
 
         except Exception as e:
-            record["status"] = "failed"
-            record["failure_reason"] = str(e)
-            failed.append({"id": candidate_id, "filename": record["filename"], "reason": str(e)})
+            crud.mark_candidate_failed(db, candidate, str(e))
+            failed.append({"id": candidate.id, "reason": str(e)})
 
     return {"processed": processed, "failed": failed}
 
-@app.get("/candidates/status")
-def get_candidates_status():
-    """Return the current status of every uploaded candidate — useful for
-    checking processing progress without re-running analyze."""
-    return {
-        "candidates": [
-            {
-                "id": cid,
-                "filename": record["filename"],
-                "status": record["status"],
-                "failure_reason": record.get("failure_reason"),
-            }
-            for cid, record in candidates_db.items()
-        ]
-    }
+@app.get("/candidates", response_model=list[CandidateResponse])
+def list_candidates(db: Session = Depends(get_db)):
+    """Return all candidates with their persisted extracted info."""
+    candidates = crud.get_all_candidates(db)
+    return [
+        CandidateResponse(
+            id=c.id,
+            name=c.name,
+            status=c.status,
+            skills=[s.name for s in c.skills],
+            experience_years=c.experience_years,
+            education=c.education,
+        )
+        for c in candidates
+    ]
 
 
 @app.get("/jobs/{job_id}/ranked-candidates", response_model=RankingResponse)

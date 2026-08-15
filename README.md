@@ -144,3 +144,15 @@ API docs.
 - Known simplification: skill lists on jobs/match_results are stored
   as comma-separated text rather than fully normalized relationships —
   noted as a possible future refactor.
+
+  ### Day 16 — Persisting Candidate Data to PostgreSQL
+- Replaced Day 12's in-memory `candidates_db` dict with real PostgreSQL
+  persistence via `backend/crud.py`.
+- Candidate name, experience, education, CV text, and status now
+  persist across restarts. Skills use a get-or-create pattern to avoid
+  duplicate skill rows across candidates.
+- Verified candidate.id stays consistent between PostgreSQL and Qdrant
+  (same ID used as the Qdrant point ID) — this is the link between the
+  two databases.
+- Jobs remain in-memory for now — deliberately out of scope for today,
+  planned for an upcoming day.
