@@ -191,3 +191,10 @@ Found a real scoping gap: search_candidates() searches ALL candidates ever inser
 Immediate fix: cleared the Qdrant collection to remove stale test data.
 According to the real design it will be a job-scoped search in this scenario so we have to wait till postgresql is wired in to associate a job is to a candidate it, as a permanent fix for this
 
+## Day 15 — Database Design & SQLAlchemy
+The database designing is done here deciding what are the tables and columns in it and how they are going to be related as a system for data flow.
+The relashionships between the tables will be:
+One to many  - like one job connecting to many application 
+many to many - like many candidates connecting to many skills, a join table is required for this joining the skill id and candidate id and so it does not have a seperate id 
+
+SQL Alchemy is a python library that allows tables be to be defined as classes called an ORM - Object Relational Mapper, instead of writing raw sql output. You can access fields like candidates.names than writing a select query,is also allows us to connect to the Database and translating our python operations to SQL under the hood

@@ -131,3 +131,16 @@ a real FastAPI application exposing the full pipeline from your original
 architecture diagram — CV processing, embeddings, vector search, ranking,
 and RAG-based explanation — all through HTTP endpoints with auto-generated
 API docs.
+
+### Day 15 — PostgreSQL Schema
+- Learned relational database design: one-to-many (jobs → applications),
+  many-to-many (candidates ↔ skills via a join table), and how
+  SQLAlchemy's ORM maps Python classes to real tables.
+- Set up PostgreSQL locally via Docker with a persistent volume.
+- Defined 6 tables in `backend/models.py`: candidates, jobs, skills,
+  candidate_skills (join table), applications, match_results.
+- Verified persistence directly — solves the in-memory data loss
+  limitation documented on Day 12.
+- Known simplification: skill lists on jobs/match_results are stored
+  as comma-separated text rather than fully normalized relationships —
+  noted as a possible future refactor.
