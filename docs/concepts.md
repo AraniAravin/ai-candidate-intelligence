@@ -209,4 +209,13 @@ When uploading a CV the data is only inserted to posgresql id created then and w
 ## Debuggings
 The get_or_create_skill() has a db.flush() instead of db.commit() which other crud operations have, so to push the pending changes to the skills table (every skill gets an id) but not fully commiting as it will be done within the save_extracted_info(), which keeps skill creation and candidate details uploading one atomic transcation, preventing any data being half saved if anything goes wrong in the overall operation.
 
-One debugging pending the pdf failure debugging check that out tommorrrow
+When a broken pdf is uploaded and when analysed the correct error response is given and also stored in the candidates db, through this it confirms that failed candidates and the reason for failure also persisted in the db
+
+## Day 17 — Job Persistence & Data Serialization
+For the candidate skills we are storing them into a table and combining them as a candidate_skills many to many join table and using them, so having commas in them is not a matter of fact.
+But for the job skills we are not having a seperate job skills table but instead we store them as a combined comma joined string in the jobs table and then split it (using the comma as a delimiter) to a list whenever necessary.
+The issue with this will be when having a skill like "Databases (MySQL, PostgreSQL)" when splitting the list it will get split to two skills though it is one single skill, the comma cannot be distinguised as a skill seperator or part of the item after combining to a list.
+
+The reason for this is yet we have not considered the use case of finding jobs based on skills we are only thinking of collection candiadates based on the skills at this point.
+
+This is not yet a proven bug, but is worth noting as a point which could be considered fixing for the future - maybe by building a job skills table mirroring candidate skills, to ensure consistency.

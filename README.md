@@ -156,3 +156,17 @@ API docs.
   two databases.
 - Jobs remain in-memory for now — deliberately out of scope for today,
   planned for an upcoming day.
+
+  ### Day 17 — Persisting Job Data to PostgreSQL
+- Replaced the last remaining in-memory store (`jobs_db`) with real
+  PostgreSQL persistence via `backend/crud.py`.
+- Job description → LLM extraction → structured profile → PostgreSQL,
+  mirroring Day 16's candidate persistence pattern.
+- Required/nice-to-have skills stored as comma-separated text (same
+  simplification as noted on Day 15) — round-tripped correctly through
+  create_job/job_skills_as_list.
+- All application state (candidates AND jobs) now fully persists across
+  server restarts — the in-memory limitation flagged on Day 12 is resolved.
+- Known limitation: job skills aren't deduplicated/normalized against a
+  shared table the way candidate skills are — an inconsistency worth
+  fixing in a future refactor.

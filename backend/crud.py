@@ -5,7 +5,7 @@ Database operations (Create/Read/Update/Delete) for candidates.
 
 from sqlalchemy.orm import Session
 
-from models import Candidate, Skill
+from models import Candidate, Skill,Job
 
 
 def get_or_create_skill(db: Session, skill_name: str) -> Skill:
@@ -53,6 +53,35 @@ def mark_candidate_failed(db: Session, candidate: Candidate, reason: str) -> Can
     db.refresh(candidate)
     return candidate
 
+def create_job(db: Session, description: str, profile: dict) -> Job:
+    """Create a job record with its extracted structured profile."""
+    job = Job(
+        description=description,
+        role=profile.get("role"),
+        required_skills=",".join(profile.get("required_skills", []) or []),
+        nice_to_have_skills=",".join(profile.get("nice_to_have_skills", []) or []),
+        experience_required=profile.get("experience_required"),
+    )
+    db.add(job)
+    db.commit()
+    db.refresh(job)
+    return job
+
+
+def get_job(db: Session, job_id: int) -> Job | None:
+    return db.query(Job).filter(Job.id == job_id).first()
+
+
+def get_all_jobs(db: Session) -> list[Job]:
+    return db.query(Job).all()
+
+
+def job_skills_as_list(job: Job) -> dict:
+    """Convert a Job's comma-separated skill strings back into lists for API responses."""
+    return {
+        "required_skills": job.required_skills.split(",") if job.required_skills else [],
+        "nice_to_have_skills": job.nice_to_have_skills.split(",") if job.nice_to_have_skills else [],
+    }
 
 def get_candidate(db: Session, candidate_id: int) -> Candidate | None:
     return db.query(Candidate).filter(Candidate.id == candidate_id).first()

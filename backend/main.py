@@ -32,8 +32,11 @@ UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 # In-memory storage for now — real DB (PostgreSQL) comes later.
 # This is a deliberate, temporary simplification.
-jobs_db: dict[int, dict] = {}
-next_job_id = 1
+#jobs_db: dict[int, dict] = {}
+#next_job_id = 1
+
+# candidates_db: dict[int, dict] = {}
+# next_candidate_id = 1
 
 class CandidateResponse(BaseModel):
     id: int
@@ -46,8 +49,7 @@ class CandidateResponse(BaseModel):
     class Config:
         from_attributes = True
 
-# candidates_db: dict[int, dict] = {}
-# next_candidate_id = 1
+
 
 
 # ---------- Pydantic models: define request/response shapes ----------
@@ -89,24 +91,39 @@ def health_check():
 
 
 @app.post("/jobs", response_model=JobResponse)
-def create_job(job: JobCreateRequest):
-    """Create a job posting and extract its structured profile."""
-    global next_job_id
+def create_job(job: JobCreateRequest, db: Session = Depends(get_db)):
+    """Create a job posting and extract its structured profile via LLM, persist to PostgreSQL."""
 
     profile = extract_job_info(job.description)
 
-    job_record = {
-        "id": next_job_id,
-        "description": job.description,
-        "role": profile.get("role"),
-        "required_skills": profile.get("required_skills", []),
-        "nice_to_have_skills": profile.get("nice_to_have_skills", []),
-        "experience_required": profile.get("experience_required"),
-    }
-    jobs_db[next_job_id] = job_record
-    next_job_id += 1
+    job_record = crud.create_job(db, description=job.description, profile=profile)
+    skills = crud.job_skills_as_list(job_record)
 
-    return job_record
+    return JobResponse(
+        id=job_record.id,
+        description=job_record.description,
+        role=job_record.role,
+        required_skills=skills["required_skills"],
+        nice_to_have_skills=skills["nice_to_have_skills"],
+        experience_required=job_record.experience_required,
+    )
+
+@app.get("/jobs", response_model=list[JobResponse])
+def list_jobs(db: Session = Depends(get_db)):
+    """Return all persisted jobs."""
+    jobs = crud.get_all_jobs(db)
+    responses = []
+    for job in jobs:
+        skills = crud.job_skills_as_list(job)
+        responses.append(JobResponse(
+            id=job.id,
+            description=job.description,
+            role=job.role,
+            required_skills=skills["required_skills"],
+            nice_to_have_skills=skills["nice_to_have_skills"],
+            experience_required=job.experience_required,
+        ))
+    return responses
 
 
 @app.post("/candidates/upload")
@@ -208,17 +225,17 @@ def list_candidates(db: Session = Depends(get_db)):
 
 
 @app.get("/jobs/{job_id}/ranked-candidates", response_model=RankingResponse)
-def rank_candidates_for_job(job_id: int, top_k: int = 5):
+def rank_candidates_for_job(job_id: int, top_k: int = 5,db: Session = Depends(get_db)):
     """
     Rank analyzed candidates against a job description using
     semantic similarity search in Qdrant.
     """
-    if job_id not in jobs_db:
+    job = crud.get_job(db, job_id)
+    if job is None:
         raise HTTPException(status_code=404, detail=f"Job {job_id} not found")
+    
 
-    job = jobs_db[job_id]
-    results = search_candidates(job["description"], top_k=top_k)
-
+    results = search_candidates(job.description, top_k=top_k)
     ranked = [{"name": name, "score": score,"cv_text":cv_text} for name, score,cv_text in results]
 
     return {"job_id": job_id, "ranked_candidates": ranked}
