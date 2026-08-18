@@ -180,3 +180,19 @@ API docs.
   fetch and display its ranked candidates via useEffect reacting to
   selectedJobId changes.
 - When the Cors is broken, an error message is shown in the network console, indicating the FE url being blocked by the BE origin.
+
+### Day 19 — Candidate Ranking Table + Details View
+- Built a ranked candidates table (Rank / Candidate / Match) with
+  clickable rows opening a details panel.
+- Backend: added GET /candidates/{id}, and updated search_candidates()
+  to return candidate IDs alongside name/score — required updating
+  three call sites (ranking endpoint, RAG chat's retrieve_context).
+- Learned: changing a shared function's return shape ripples across
+  every caller — traced and fixed all three.
+- Deliberately tested removing `setSelectedCandidate(null)` from the 
+  job-switching useEffect. Confirmed: without it, switching jobs leaves 
+  the previous job's candidate details lingering on screen, since React 
+  state doesn't auto-clear just because a different piece of state 
+  (selectedJobId) changed — nothing else was telling it to reset. 
+  Restored the line, confirmed switching jobs now correctly clears the 
+  panel. Confirms this one line is genuinely necessary, not incidental.

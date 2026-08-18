@@ -112,7 +112,7 @@ ANSWER:"""
 
 def retrieve_context(question: str, top_k: int = 3) -> str:
     results = search_candidates(question, top_k=top_k)
-    return "\n".join(f"- {name} (similarity score: {score})" for name, score in results)
+    return "\n".join(f"- {name} (similarity score: {score})" for _,name, score in results)
 
 
 def generate_answer(question: str, context: str) -> str:

@@ -83,6 +83,7 @@ class ChatRequest(BaseModel):
 class ChatResponse(BaseModel):
     answer: str
 class RankedCandidate(BaseModel):
+    id:int
     name: str
     score: float
 
@@ -96,7 +97,6 @@ class RankingResponse(BaseModel):
 def health_check():
     """Simple liveness check — no body needed, just confirms the API is up."""
     return {"status": "ok"}
-
 
 @app.post("/jobs", response_model=JobResponse)
 def create_job(job: JobCreateRequest, db: Session = Depends(get_db)):
@@ -244,7 +244,7 @@ def rank_candidates_for_job(job_id: int, top_k: int = 5,db: Session = Depends(ge
     
 
     results = search_candidates(job.description, top_k=top_k)
-    ranked = [{"name": name, "score": score,"cv_text":cv_text} for name, score,cv_text in results]
+    ranked = [{"id": cid,"name": name, "score": score,"cv_text":cv_text} for cid,name, score,cv_text in results]
 
     return {"job_id": job_id, "ranked_candidates": ranked}
 
@@ -254,3 +254,19 @@ def chat(request: ChatRequest):
     """Ask why a specific candidate is a good fit for a given job."""
     answer = explain_ranking(request.candidate_name, request.job_description)
     return {"answer": answer}
+
+@app.get("/candidates/{candidate_id}", response_model=CandidateResponse)
+def get_candidate_detail(candidate_id: int, db: Session = Depends(get_db)):
+    """Return full details for a single candidate."""
+    candidate = crud.get_candidate(db, candidate_id)
+    if candidate is None:
+        raise HTTPException(status_code=404, detail=f"Candidate {candidate_id} not found")
+
+    return CandidateResponse(
+        id=candidate.id,
+        name=candidate.name,
+        status=candidate.status,
+        skills=[s.name for s in candidate.skills],
+        experience_years=candidate.experience_years,
+        education=candidate.education,
+    )

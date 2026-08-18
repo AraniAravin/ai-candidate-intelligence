@@ -6,6 +6,7 @@ function App() {
   const [jobs, setJobs] = useState([]);
   const [selectedJobId, setSelectedJobId] = useState(null);
   const [rankedCandidates, setRankedCandidates] = useState([]);
+  const [selectedCandidate, setSelectedCandidate] = useState(null);
 
   useEffect(() => {
     fetchJobs();
@@ -14,6 +15,7 @@ function App() {
   useEffect(() => {
     if (selectedJobId) {
       fetchRankedCandidates(selectedJobId);
+      setSelectedCandidate(null); // clear details when switching jobs
     }
   }, [selectedJobId]);
 
@@ -27,6 +29,12 @@ function App() {
     const response = await fetch(`${API_BASE}/jobs/${jobId}/ranked-candidates`);
     const data = await response.json();
     setRankedCandidates(data.ranked_candidates);
+  }
+
+  async function handleCandidateClick(candidateId) {
+    const response = await fetch(`${API_BASE}/candidates/${candidateId}`);
+    const data = await response.json();
+    setSelectedCandidate(data);
   }
 
   return (
@@ -47,14 +55,39 @@ function App() {
       {selectedJobId && (
         <>
           <h2>Ranked Candidates for Job #{selectedJobId}</h2>
-          <ul>
-            {rankedCandidates.map((candidate, index) => (
-              <li key={index}>
-                {candidate.name} — {(candidate.score * 100).toFixed(1)}%
-              </li>
-            ))}
-          </ul>
+          <table border="1" cellPadding="8" style={{ borderCollapse: "collapse" }}>
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Candidate</th>
+                <th>Match</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rankedCandidates.map((candidate, index) => (
+                <tr
+                  key={candidate.id}
+                  onClick={() => handleCandidateClick(candidate.id)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <td>{index + 1}</td>
+                  <td>{candidate.name}</td>
+                  <td>{(candidate.score * 100).toFixed(0)}%</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </>
+      )}
+
+      {selectedCandidate && (
+        <div style={{ marginTop: "20px", padding: "12px", border: "1px solid #ccc" }}>
+          <h3>{selectedCandidate.name}</h3>
+          <p><strong>Status:</strong> {selectedCandidate.status}</p>
+          <p><strong>Experience:</strong> {selectedCandidate.experience_years ?? "Not specified"} years</p>
+          <p><strong>Education:</strong> {selectedCandidate.education ?? "Not specified"}</p>
+          <p><strong>Skills:</strong> {selectedCandidate.skills?.join(", ") || "None extracted"}</p>
+        </div>
       )}
     </div>
   );

@@ -230,3 +230,13 @@ State - data can change within a component, and when it does, react automaticall
 useEffect- a hook for running code when a component reloads or a value changes. This is how we get the jobs listed in the UI as soon as we load the page. 
 
 CORS is protecting an endpoint from malicious access, therefore, when deliberating breaking the cors, an error telling access to the BE endpoint cannot be accessed as requests from our FE origin has been blocked.
+
+## Day 19 — Conditional Rendering & Cross-Cutting Changes
+An end point was created for selecting a candidate by the id, it was for the purpose of being able to select a ranked candidate and get to know further details about them.
+
+selectedCandidate state was used to keep track of the data displayed about a particular candidate, selectedCandidate is updated in two places: cleared to null whenever the 
+job role changes (since the ranked list is now different), and set to 
+the fetched candidate data whenever a row is clicked.
+
+Currently the ranked candidates list returned from Qdrant only has the name and score, but for us to pull out for details from postgresql, which isnt available in QDrant, we need the id of the candidate so we had to receive the parameter in the output list and make changes to functions that are related to it.
+This is a good lesson that grep searching for a functions usages before updating its signature is a real habit worth building.

@@ -57,7 +57,7 @@ def search_candidates(query_text: str, top_k: int = 3) -> list[tuple[str, float]
 
     # return [(hit.payload["name"], round(hit.score, 4)) for hit in results]
     return [
-        (hit.payload["name"], round(hit.score, 4), hit.payload.get("cv_text", ""))
+        (hit.id,hit.payload["name"], round(hit.score, 4), hit.payload.get("cv_text", ""))
         for hit in results
     ]
 
