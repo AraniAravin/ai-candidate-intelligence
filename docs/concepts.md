@@ -216,6 +216,17 @@ For the candidate skills we are storing them into a table and combining them as 
 But for the job skills we are not having a seperate job skills table but instead we store them as a combined comma joined string in the jobs table and then split it (using the comma as a delimiter) to a list whenever necessary.
 The issue with this will be when having a skill like "Databases (MySQL, PostgreSQL)" when splitting the list it will get split to two skills though it is one single skill, the comma cannot be distinguised as a skill seperator or part of the item after combining to a list.
 
-The reason for this is yet we have not considered the use case of finding jobs based on skills we are only thinking of collection candiadates based on the skills at this point.
+The reason for this is yet we have not considered the use case of finding jobs based on skills we are only thinking of collection candidates based on the skills at this point.
 
 This is not yet a proven bug, but is worth noting as a point which could be considered fixing for the future - maybe by building a job skills table mirroring candidate skills, to ensure consistency.
+
+## Day 18 — React Fundamentals
+
+React is  javascript library which helps in building a webpage, each component of this will be an interactive UI, such as a button, card etc.
+A component - Javascript function that returns a UI
+JSX - HTML looking syntax but written directly inside javascript, the code gets compiled into javascript but written in markup language
+Props- how a parent component will pass data into a child component
+State - data can change within a component, and when it does, react automatically re renders the UI to display the new data. 
+useEffect- a hook for running code when a component reloads or a value changes. This is how we get the jobs listed in the UI as soon as we load the page. 
+
+CORS is protecting an endpoint from malicious access, therefore, when deliberating breaking the cors, an error telling access to the BE endpoint cannot be accessed as requests from our FE origin has been blocked.

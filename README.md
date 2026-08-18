@@ -170,3 +170,13 @@ API docs.
 - Known limitation: job skills aren't deduplicated/normalized against a
   shared table the way candidate skills are — an inconsistency worth
   fixing in a future refactor.
+
+  ### Day 18 — React Dashboard (learning React from scratch)
+- New to React going into today — learned components, JSX, props,
+  state (useState), effects (useEffect), and fetching data from an API.
+- Scaffolded frontend with Vite, enabled CORS on FastAPI to allow
+  the frontend (localhost:5173) to call the backend (localhost:8000).
+- Built a working dashboard: fetch and list jobs, click a job to
+  fetch and display its ranked candidates via useEffect reacting to
+  selectedJobId changes.
+- When the Cors is broken, an error message is shown in the network console, indicating the FE url being blocked by the BE origin.

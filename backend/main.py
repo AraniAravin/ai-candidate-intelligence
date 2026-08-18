@@ -4,6 +4,7 @@ FastAPI application wiring together the AI pipeline built in Weeks 1-2.
 """
 
 from fastapi import FastAPI, UploadFile, File, Depends
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
 from pydantic import BaseModel
@@ -22,6 +23,13 @@ from vector_store import create_collection, insert_candidate, search_candidates
 from rag_chat import explain_ranking
 
 app = FastAPI(title="AI Candidate Intelligence Platform")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Ensure the Qdrant collection exists when the app starts
 create_collection()
