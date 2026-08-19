@@ -7,6 +7,8 @@ function App() {
   const [selectedJobId, setSelectedJobId] = useState(null);
   const [rankedCandidates, setRankedCandidates] = useState([]);
   const [selectedCandidate, setSelectedCandidate] = useState(null);
+  const [matchDetails, setMatchDetails] = useState(null);
+  const [loadingExplanation, setLoadingExplanation] = useState(false);
 
   useEffect(() => {
     fetchJobs();
@@ -15,7 +17,8 @@ function App() {
   useEffect(() => {
     if (selectedJobId) {
       fetchRankedCandidates(selectedJobId);
-      setSelectedCandidate(null); // clear details when switching jobs
+      //setSelectedCandidate(null); // clear details when switching jobs
+      setMatchDetails(null);
     }
   }, [selectedJobId]);
 
@@ -31,11 +34,23 @@ function App() {
     setRankedCandidates(data.ranked_candidates);
   }
 
+  // async function handleCandidateClick(candidateId) {
+  //   const response = await fetch(`${API_BASE}/candidates/${candidateId}`);
+  //   const data = await response.json();
+  //   setSelectedCandidate(data);
+  // }
   async function handleCandidateClick(candidateId) {
-    const response = await fetch(`${API_BASE}/candidates/${candidateId}`);
-    const data = await response.json();
-    setSelectedCandidate(data);
-  }
+  setLoadingExplanation(true);
+  setMatchDetails(null);
+
+  const response = await fetch(
+    `${API_BASE}/jobs/${selectedJobId}/candidates/${candidateId}/match-details`
+  );
+  const data = await response.json();
+
+  setMatchDetails(data);
+  setLoadingExplanation(false);
+}
 
   return (
     <div style={{ fontFamily: "sans-serif", padding: "20px" }}>
@@ -80,7 +95,7 @@ function App() {
         </>
       )}
 
-      {selectedCandidate && (
+      {/* {selectedCandidate && (
         <div style={{ marginTop: "20px", padding: "12px", border: "1px solid #ccc" }}>
           <h3>{selectedCandidate.name}</h3>
           <p><strong>Status:</strong> {selectedCandidate.status}</p>
@@ -88,7 +103,40 @@ function App() {
           <p><strong>Education:</strong> {selectedCandidate.education ?? "Not specified"}</p>
           <p><strong>Skills:</strong> {selectedCandidate.skills?.join(", ") || "None extracted"}</p>
         </div>
+      )} */}
+      {loadingExplanation && <p>Loading match details...</p>}
+
+{matchDetails && (
+  <div style={{ marginTop: "20px", padding: "12px", border: "1px solid #ccc", maxWidth: "500px" }}>
+    <h3>{matchDetails.candidate_name}</h3>
+    <p><strong>Match Score:</strong> {matchDetails.score}%</p>
+
+    <p><strong>Strong Matches</strong></p>
+    <ul>
+      {matchDetails.matching_skills.length > 0 ? (
+        matchDetails.matching_skills.map((skill) => <li key={skill}>{skill}</li>)
+      ) : (
+        <li>None</li>
       )}
+    </ul>
+
+    <p><strong>Missing</strong></p>
+    <ul>
+      {matchDetails.missing_skills.length > 0 ? (
+        matchDetails.missing_skills.map((skill) => <li key={skill}>{skill}</li>)
+      ) : (
+        <li>None</li>
+      )}
+    </ul>
+
+    <p><strong>Experience</strong></p>
+    <p>{matchDetails.experience_years ?? "Not specified"} years relevant experience</p>
+
+    <p><strong>AI Explanation</strong></p>
+    <p>{matchDetails.explanation}</p>
+  </div>
+)}
+      
     </div>
   );
 }

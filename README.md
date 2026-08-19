@@ -196,3 +196,15 @@ API docs.
   (selectedJobId) changed — nothing else was telling it to reset. 
   Restored the line, confirmed switching jobs now correctly clears the 
   panel. Confirms this one line is genuinely necessary, not incidental.
+
+### Day 20 — AI Match Explanation (Full Match Card)
+- Built the complete match breakdown: semantic score, matching/missing
+  skills (set-based comparison with case normalization), experience,
+  and an AI-generated explanation — combining Day 20's deterministic
+  skill logic with Day 11's RAG explanation in one endpoint.
+- This is the first fully working version of the original architecture
+  diagram's "Candidate Score / Matching Skills / Missing Skills /
+  Explanation" dashboard component.
+- Noted real latency difference between fast DB-only lookups and this
+  LLM-involving endpoint — around 30 secs.
+- The candidate ranking remained same as the scores calculated will be same, but the LLM explanation varied slightly time to time, based on the order of listing skills and considering personal projects.

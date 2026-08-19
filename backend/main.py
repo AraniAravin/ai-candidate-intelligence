@@ -270,3 +270,49 @@ def get_candidate_detail(candidate_id: int, db: Session = Depends(get_db)):
         experience_years=candidate.experience_years,
         education=candidate.education,
     )
+
+class MatchDetailResponse(BaseModel):
+    candidate_id: int
+    candidate_name: str
+    job_id: int
+    score: float
+    matching_skills: list[str]
+    missing_skills: list[str]
+    experience_years: int | None
+    explanation: str
+
+
+@app.get("/jobs/{job_id}/candidates/{candidate_id}/match-details", response_model=MatchDetailResponse)
+def get_match_details(job_id: int, candidate_id: int, db: Session = Depends(get_db)):
+    """Full match breakdown for one candidate against one job:
+    semantic score, matching/missing skills, and an AI-generated explanation."""
+    job = crud.get_job(db, job_id)
+    if job is None:
+        raise HTTPException(status_code=404, detail=f"Job {job_id} not found")
+
+    candidate = crud.get_candidate(db, candidate_id)
+    if candidate is None:
+        raise HTTPException(status_code=404, detail=f"Candidate {candidate_id} not found")
+
+    # Semantic score: reuse the same search results this candidate would appear in
+    results = search_candidates(job.description, top_k=1000)
+    score = next((s for cid, name, s,cv_text in results if cid == candidate_id), 0.0)
+
+    job_skills = crud.job_skills_as_list(job)
+    skill_match = crud.compute_skill_match(
+        candidate_skills=[s.name for s in candidate.skills],
+        required_skills=job_skills["required_skills"],
+    )
+
+    explanation = explain_ranking(candidate.name, job.description)
+
+    return MatchDetailResponse(
+        candidate_id=candidate.id,
+        candidate_name=candidate.name,
+        job_id=job.id,
+        score=round(score * 100, 1),
+        matching_skills=skill_match["matching_skills"],
+        missing_skills=skill_match["missing_skills"],
+        experience_years=candidate.experience_years,
+        explanation=explanation,
+    )

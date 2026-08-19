@@ -114,3 +114,6 @@ Requirements
     print("Processing job description...\n")
     profile = extract_job_info(job_description)
     print(json.dumps(profile, indent=2))
+
+
+

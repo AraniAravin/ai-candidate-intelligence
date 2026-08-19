@@ -67,6 +67,22 @@ def create_job(db: Session, description: str, profile: dict) -> Job:
     db.refresh(job)
     return job
 
+def compute_skill_match(candidate_skills: list[str], required_skills: list[str]) -> dict:
+    """Compare candidate skills against a job's required skills."""
+    candidate_set = {s.strip().lower() for s in candidate_skills if s.strip()}
+    required_set = {s.strip().lower() for s in required_skills if s.strip()}
+
+    matching_lower = candidate_set & required_set
+    missing_lower = required_set - candidate_set
+
+    # Map back to original casing for display, using the required_skills list as source of truth
+    original_required = {s.strip().lower(): s.strip() for s in required_skills if s.strip()}
+
+    matching = [original_required[s] for s in matching_lower]
+    missing = [original_required[s] for s in missing_lower]
+
+    return {"matching_skills": matching, "missing_skills": missing}
+
 
 def get_job(db: Session, job_id: int) -> Job | None:
     return db.query(Job).filter(Job.id == job_id).first()
