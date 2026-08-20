@@ -1,3 +1,4 @@
+# VERSION 1
 # """
 # rag_chat.py // Day 10 Generic Version for understanding
 # Basic RAG pipeline: question -> embed -> retrieve from Qdrant ->
@@ -109,6 +110,24 @@ QUESTION:
 
 ANSWER:"""
 
+"""
+Add this to rag_chat.py — a broader assistant function that can see
+multiple candidates at once, for comparison and filtering questions.
+"""
+
+ASSISTANT_PROMPT_TEMPLATE = """You are an AI recruitment assistant. Answer the recruiter's question using ONLY the candidate data below. If the data doesn't support a confident answer, say so honestly.
+
+JOB CONTEXT:
+{job_context}
+
+CANDIDATES:
+{candidates_context}
+
+QUESTION:
+{question}
+
+ANSWER:"""
+
 
 def retrieve_context(question: str, top_k: int = 3) -> str:
     results = search_candidates(question, top_k=top_k)
@@ -207,3 +226,34 @@ if __name__ == "__main__":
     explanation = explain_ranking(candidate_name, job_description)
     print("Answer:")
     print(explanation)
+
+
+def build_candidates_context(candidates: list[dict]) -> str:
+    """Format a list of candidate dicts into readable text for the LLM."""
+    parts = []
+    for c in candidates:
+        skills = ", ".join(c["skills"]) if c["skills"] else "none listed"
+        parts.append(
+            f"- {c['name']} | Skills: {skills} | "
+            f"Experience: {c['experience_years'] if c['experience_years'] is not None else 'unknown'} years | "
+            f"Education: {c['education'] or 'unknown'}"
+        )
+    return "\n".join(parts)
+
+
+def answer_recruiter_question(question: str, job_description: str, candidates: list[dict]) -> str:
+    """
+    General-purpose RAG assistant: given a question, a job's context,
+    and a list of candidates (with their structured info), generate
+    a grounded answer — handles comparisons, filtering, and open questions.
+    """
+    candidates_context = build_candidates_context(candidates)
+
+    prompt = ASSISTANT_PROMPT_TEMPLATE.format(
+        job_context=job_description or "No specific job selected.",
+        candidates_context=candidates_context or "No candidates available.",
+        question=question,
+    )
+
+    response = ollama.generate(model=MODEL_NAME, prompt=prompt)
+    return response["response"].strip()

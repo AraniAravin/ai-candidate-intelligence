@@ -20,7 +20,7 @@ from pdf_parser import extract_text_from_pdf
 from extract_job_info import extract_job_info
 from extract_candidate_info import extract_candidate_info
 from vector_store import create_collection, insert_candidate, search_candidates
-from rag_chat import explain_ranking
+from rag_chat import explain_ranking,answer_recruiter_question
 
 app = FastAPI(title="AI Candidate Intelligence Platform")
 
@@ -76,8 +76,8 @@ class JobResponse(BaseModel):
 
 
 class ChatRequest(BaseModel):
-    candidate_name: str
-    job_description: str
+    question: str
+    job_id: int | None = None
 
 
 class ChatResponse(BaseModel):
@@ -250,9 +250,31 @@ def rank_candidates_for_job(job_id: int, top_k: int = 5,db: Session = Depends(ge
 
 
 @app.post("/chat", response_model=ChatResponse)
-def chat(request: ChatRequest):
-    """Ask why a specific candidate is a good fit for a given job."""
-    answer = explain_ranking(request.candidate_name, request.job_description)
+def chat(request: ChatRequest, db: Session = Depends(get_db)):
+    """
+    General AI recruitment assistant. Can answer comparison questions
+    ("why is A better than B?") and filtering questions
+    ("which candidates know Python and AWS?") using all analyzed candidates.
+    """
+    job_description = ""
+    if request.job_id is not None:
+        job = crud.get_job(db, request.job_id)
+        if job:
+            job_description = job.description
+
+    all_candidates = crud.get_all_candidates(db)
+    candidates_data = [
+        {
+            "name": c.name,
+            "skills": [s.name for s in c.skills],
+            "experience_years": c.experience_years,
+            "education": c.education,
+        }
+        for c in all_candidates
+        if c.status == "analyzed"
+    ]
+
+    answer = answer_recruiter_question(request.question, job_description, candidates_data)
     return {"answer": answer}
 
 @app.get("/candidates/{candidate_id}", response_model=CandidateResponse)

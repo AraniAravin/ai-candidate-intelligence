@@ -208,3 +208,21 @@ API docs.
 - Noted real latency difference between fast DB-only lookups and this
   LLM-involving endpoint — around 30 secs.
 - The candidate ranking remained same as the scores calculated will be same, but the LLM explanation varied slightly time to time, based on the order of listing skills and considering personal projects.
+
+### Day 21 — RAG-Powered AI Recruitment Assistant (Week 3 Milestone)
+- Replaced the narrow Day 11 targeted chat with a general assistant
+  that sees all analyzed candidates' structured data at once, enabling
+  comparison ("why is A better than B") and filtering ("which candidates
+  know X and Y") questions in natural language.
+- Uses a "context stuffing" approach — valid at current candidate scale,
+  documented as a known scaling limit (would need real retrieval-based
+  filtering before the LLM at production scale).
+- Built a chat UI on the dashboard with conversation history.
+- Verified filtering accuracy manually against PostgreSQL — When retrieving candidates with two common skills, candidates with the matching and missing skills were accurately retrieved than hallucinating.
+- An issue till now is the chat is more focused towards job and candidates, when asked common questions it still relates to each job and candidate, this will have to be looked into for later
+
+## 🎯 Week 3 Milestone — Complete
+The dashboard is now a real AI recruitment assistant: recruiters can
+browse jobs, view ranked candidates, see full match breakdowns with
+AI explanations, and ask open-ended natural-language questions across
+all candidates.

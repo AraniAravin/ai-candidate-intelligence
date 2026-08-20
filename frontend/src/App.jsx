@@ -9,6 +9,10 @@ function App() {
   const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [matchDetails, setMatchDetails] = useState(null);
   const [loadingExplanation, setLoadingExplanation] = useState(false);
+  const [chatQuestion, setChatQuestion] = useState("");
+  const [chatHistory, setChatHistory] = useState([]); // list of {question, answer}
+  const [chatLoading, setChatLoading] = useState(false);
+
 
   useEffect(() => {
     fetchJobs();
@@ -50,6 +54,24 @@ function App() {
 
   setMatchDetails(data);
   setLoadingExplanation(false);
+}
+
+async function handleAskQuestion() {
+  if (!chatQuestion.trim()) return;
+
+  setChatLoading(true);
+  const questionText = chatQuestion;
+  setChatQuestion("");
+
+  const response = await fetch(`${API_BASE}/chat`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ question: questionText, job_id: selectedJobId }),
+  });
+  const data = await response.json();
+
+  setChatHistory((prev) => [...prev, { question: questionText, answer: data.answer }]);
+  setChatLoading(false);
 }
 
   return (
@@ -136,6 +158,32 @@ function App() {
     <p>{matchDetails.explanation}</p>
   </div>
 )}
+
+<div style={{ marginTop: "30px", padding: "12px", border: "1px solid #999", maxWidth: "600px" }}>
+  <h2>Ask the AI Recruitment Assistant</h2>
+
+  <div style={{ maxHeight: "300px", overflowY: "auto", marginBottom: "10px" }}>
+    {chatHistory.map((entry, index) => (
+      <div key={index} style={{ marginBottom: "12px" }}>
+        <p><strong>Q:</strong> {entry.question}</p>
+        <p><strong>A:</strong> {entry.answer}</p>
+      </div>
+    ))}
+    {chatLoading && <p>Thinking...</p>}
+  </div>
+
+  <input
+    type="text"
+    value={chatQuestion}
+    onChange={(e) => setChatQuestion(e.target.value)}
+    onKeyDown={(e) => e.key === "Enter" && handleAskQuestion()}
+    placeholder="e.g. Which candidates know Python and AWS?"
+    style={{ width: "100%", padding: "8px" }}
+  />
+  <button onClick={handleAskQuestion} disabled={chatLoading} style={{ marginTop: "8px" }}>
+    Ask
+  </button>
+</div>
       
     </div>
   );
