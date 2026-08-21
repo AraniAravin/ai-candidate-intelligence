@@ -267,3 +267,24 @@ The App.jsx is getting longer by the addition of more state/fetch/effect patern,
 By splitting into components every piece becomes its own file/function, receiving what is needs using props  and a callback function is the way used by the child component to tell the parent something happened please refresh. This is the ideal React way of passing data to from a child to its parents, as the child component cannot directly modify the state of the parent.
 
 When we send a JSON text the server understands, but when we send a pdf file it is a bunch of raw text and the server cannot understand this therefore the browser has a tool specifically built to send files called formdata and it sends the file in this format and you dont have to explicitly state the format of the content the browser will send a format called multipart/form-data, since the fast API understands this format as we installed the multipart it will accept this data format. So all this is done to ensure correct communication happens between FE and BE.
+
+## Day 22 — Ranking Evaluation Metrics
+The idea of evaluation here is going to be to understand how good my ranked list is compared to the ideal one. It measure how many candidates who actually fit are listed and the order of their listing.
+
+The four metrics chosen are:
+Precision - measures how many of the actual relavent candidates are actually listed - 3/3
+Recall - for a small dataset both precision and recall go in a same scale - 3/3
+MRR - makes sure if the first hit is correct, like the first ranked candidate is actually first, suppose if the first ranked is 3rd in the prediction it gives a value like 1/3 - this is the right metric when you care about getting the single candidate right not worrying abt the rest of the order.
+NDCG - measures the order of ranking not only all needs to be listed and first hit right, every candidate needs to be in the correct position, and that is why is the most informative ranking metric for ranking quality, used in search engines and recommendation systems.
+
+Why having all these metrics is a good practice is because each one has its own limitation, precision or recall doesnt mind the order, MRR does not care any other than the first hit and NDCG only worries abt the order and not very intuitive at first glance, therefore it is a standard practice in having multiple metrics as no single number tell the whole number.
+
+The NDCG formula is:
+1st ranked candidate - actually
+is 10th ranked in  prediction
+so the equation for log is 1/log2(i+1)
+so for this its 1/log2(10+1) = 0.29
+
+Why log is chosen in this context is, it grows slow so the penalty for being lower in the list than intended is less, for position 1 being in 2 is not a big difference, but reward being near the top is still clearly higher than being buried. For example a recruiter looking at a ranked list really cares abt the order but the swap between 20 and 21 barely matters.
+This is like the position tax being at the top is good, near the top is better,and log2 is just the specific mathematical curve chosen to model how much attention drops off as you scroll down a ranked list
+

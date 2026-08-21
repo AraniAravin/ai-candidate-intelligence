@@ -235,3 +235,14 @@ all candidates.
   connected to App.jsx via callback props (onJobCreated, onCandidatesProcessed).
 - The dashboard is now a fully self-contained product — create a job,
   upload CVs, see rankings and AI explanations, all without touching /docs.
+
+  ### Day 22 — Ranking Evaluation Metrics
+- Learned Precision@K, Recall@K, MRR, and NDCG — what each measures
+  and why NDCG is the most complete (captures full ranking order,
+  not just presence or first-hit position).
+- Built `backend/evaluation.py` with all four metric functions,
+  verified against a hand-calculated worked example.
+- Built `data/test_dataset.json`: [N] job descriptions with
+  human-judged expected candidate rankings, to be used for real
+  evaluation on Day 23.
+- Evaluated for two Job descriptions and the ranking was perfectly matching for the first JD and for the second one one of the predictions was incorrect reducing the NDCG value
