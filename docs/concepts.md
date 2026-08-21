@@ -260,3 +260,10 @@ One that could be directly answered without LLM, just by skill matching - Candid
 Other which needs reasoning in natural language by the LLM - which candidate suits the role more? - LLM needs to answer this
 
 But currently for both question type we are passing data to LLM and getting it answer for now and it is providing accurate details.
+
+## Component Splitting & Callback Props (Gap Fix)
+The App.jsx is getting longer by the addition of more state/fetch/effect patern, which can be added into seperates files as different UI components and can be called within App.jsx for a better project structure.
+
+By splitting into components every piece becomes its own file/function, receiving what is needs using props  and a callback function is the way used by the child component to tell the parent something happened please refresh. This is the ideal React way of passing data to from a child to its parents, as the child component cannot directly modify the state of the parent.
+
+When we send a JSON text the server understands, but when we send a pdf file it is a bunch of raw text and the server cannot understand this therefore the browser has a tool specifically built to send files called formdata and it sends the file in this format and you dont have to explicitly state the format of the content the browser will send a format called multipart/form-data, since the fast API understands this format as we installed the multipart it will accept this data format. So all this is done to ensure correct communication happens between FE and BE.

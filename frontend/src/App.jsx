@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import JobForm from "./JobForm";
+import CvUploadForm from "./CvUploadForm";
 
 const API_BASE = "http://127.0.0.1:8000";
 
@@ -77,6 +79,10 @@ async function handleAskQuestion() {
   return (
     <div style={{ fontFamily: "sans-serif", padding: "20px" }}>
       <h1>AI Candidate Intelligence</h1>
+
+      <JobForm onJobCreated={fetchJobs} />
+      <CvUploadForm onCandidatesProcessed={() => {
+        if (selectedJobId) fetchRankedCandidates(selectedJobId);}} />
 
       <h2>Jobs</h2>
       <ul>

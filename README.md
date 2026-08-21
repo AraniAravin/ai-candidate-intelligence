@@ -226,3 +226,12 @@ The dashboard is now a real AI recruitment assistant: recruiters can
 browse jobs, view ranked candidates, see full match breakdowns with
 AI explanations, and ask open-ended natural-language questions across
 all candidates.
+
+### Job Creation & CV Upload UI (gap fix)
+- Identified that the Week 1-3 frontend could only display data
+  fetched via the API — job creation and CV upload were only ever
+  tested through /docs (Swagger UI), never through the actual dashboard.
+- Built JobForm.jsx and CvUploadForm.jsx as separate components,
+  connected to App.jsx via callback props (onJobCreated, onCandidatesProcessed).
+- The dashboard is now a fully self-contained product — create a job,
+  upload CVs, see rankings and AI explanations, all without touching /docs.
