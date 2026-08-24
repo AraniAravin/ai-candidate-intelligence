@@ -246,3 +246,16 @@ all candidates.
   human-judged expected candidate rankings, to be used for real
   evaluation on Day 23.
 - Evaluated for two Job descriptions and the ranking was perfectly matching for the first JD and for the second one one of the predictions was incorrect reducing the NDCG value
+
+### Day 23 — Real Evaluation Results
+- Ran `backend/evaluation.py` against `data/test_dataset.json` using
+  the real matching pipeline (not simulated data).
+- AVERAGES ACROSS ALL TEST CASES
+  Mean precision_at_3: 1.000
+  Mean recall_at_3: 0.600
+  Mean mrr: 1.000
+  Mean ndcg_at_k: 1.000
+
+  - In the Test Case 1, there was a mismatch between expected and actual ranking - the expected candidate '1' as top 1 was positioned second, the candidate had the exact skills listed in the JD but the candidate positioned 1 ('6') did not have the exact skills but was still ranked 1, which is a good point to catch though candidate 1 had exact skill match the rest of the CV did not have the relevant experience required and therefore embedding value could have been much farer than for candidate 6
+ - Again candidate 7 and candidate 4 listed was swapped in the systems retrieval, though candidate 7 had more technical depth in the CV the cosine similarity does not recognise this it only recognises how close the vectors are in the embedding space.
+ - pure semantic similarity method is working well in matching the candidates as a good match between the expected and actual candidates can be seen from the results, but from the above mismatches it is found that including skill matching can be an added efficiency in matching candidates

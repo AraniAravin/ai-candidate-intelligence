@@ -288,3 +288,36 @@ so for this its 1/log2(10+1) = 0.29
 Why log is chosen in this context is, it grows slow so the penalty for being lower in the list than intended is less, for position 1 being in 2 is not a big difference, but reward being near the top is still clearly higher than being buried. For example a recruiter looking at a ranked list really cares abt the order but the swap between 20 and 21 barely matters.
 This is like the position tax being at the top is good, near the top is better,and log2 is just the specific mathematical curve chosen to model how much attention drops off as you scroll down a ranked list
 
+# Evaluation Results
+
+## Methodology
+2 test cases were built by manually ranking 5 candidate CVs against
+real job descriptions, based on human judgment of fit. The system's
+actual output (via Qdrant semantic similarity search) was compared
+against this ground truth using standard ranking metrics.
+
+## Results
+Test Case 1: Python backend developer with FastAPI and PostgreSQL experie...
+  Expected: [6, 1, 7, 4, 2]
+  Actual:   [6, 1, 4, 7, 2]
+  Precision@3: 1.0
+  Recall@3:    0.6
+  MRR:           1.0
+  NDCG@3:      1.0
+
+Test Case 2: Full Stack engineer skilled in React and modern CSS, 1+ year...
+  Expected: [4, 6, 1, 7, 2]
+  Actual:   [4, 6, 1, 7, 3]
+  Precision@3: 1.0
+  Recall@3:    0.6
+  MRR:           1.0
+  NDCG@3:      1.0
+
+## Analysis
+- In the Test Case 1, there was a mismatch between expected and actual ranking - the expected candidate '1' as top 1 was positioned second, the candidate had the exact skills listed in the JD but the candidate positioned 1 ('6') did not have the exact skills but was still ranked 1, which is a good point to catch though candidate 1 had exact skill match the rest of the CV did not have the relevant experience required and therefore embedding value could have been much farer than for candidate 6
+ - Again candidate 7 and candidate 4 listed was swapped in the systems retrieval, though candidate 7 had more technical depth in the CV the cosine similarity does not recognise this it only recognises how close the vectors are in the embedding space.
+ - pure semantic similarity method is working well in matching the candidates as a good match between the expected and actual candidates can be seen from the results, but from the above mismatches it is found that including combined scoring approaches can be an added efficiency in matching candidates
+
+## Limitations
+- Small test set (2 cases) — a sanity check, not a rigorous benchmark
+- Ground truth is one person's (my) judgment, not multiple independent raters
