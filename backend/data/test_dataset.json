@@ -3,13 +3,13 @@
     {
       "job_id": null,
       "job_description": "Python backend developer with FastAPI and PostgreSQL experience, 2+ years required.",
-      "expected_ranking": ["cv_6", "cv_1", "cv_7", "cv_4", "cv_2"] 
+      "expected_ranking": [1, 6, 7, 4,2] 
       
     },
     {
       "job_id": null,
       "job_description": "Full Stack engineer skilled in React and modern CSS, 1+ years experience.",
-      "expected_ranking": ["cv_6", "cv_1", "cv_7", "cv_4", "cv_2"]
+      "expected_ranking": [4,6, 1, 7,2] 
     }
   ]
 }
