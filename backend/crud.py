@@ -4,8 +4,9 @@ Database operations (Create/Read/Update/Delete) for candidates.
 """
 
 from sqlalchemy.orm import Session
-
 from models import Candidate, Skill,Job
+from sqlalchemy import text
+from models import Application, MatchResult
 
 
 def get_or_create_skill(db: Session, skill_name: str) -> Skill:
@@ -105,3 +106,51 @@ def get_candidate(db: Session, candidate_id: int) -> Candidate | None:
 
 def get_all_candidates(db: Session) -> list[Candidate]:
     return db.query(Candidate).all()
+
+def delete_candidate(db: Session, candidate_id: int) -> bool:
+    """Delete a candidate and all dependent rows (applications, match results, skill links)."""
+    candidate = db.query(Candidate).filter(Candidate.id == candidate_id).first()
+    if candidate is None:
+        return False
+
+    app_ids_subquery = db.query(Application.id).filter(Application.candidate_id == candidate_id)
+    db.query(MatchResult).filter(MatchResult.application_id.in_(app_ids_subquery)).delete(synchronize_session=False)
+    db.query(Application).filter(Application.candidate_id == candidate_id).delete(synchronize_session=False)
+
+    candidate.skills = []  # clears the candidate_skills join rows
+    db.delete(candidate)
+    db.commit()
+    return True
+
+
+def delete_job(db: Session, job_id: int) -> bool:
+    """Delete a job and all dependent rows (applications, match results)."""
+    job = db.query(Job).filter(Job.id == job_id).first()
+    if job is None:
+        return False
+
+    app_ids_subquery = db.query(Application.id).filter(Application.job_id == job_id)
+    db.query(MatchResult).filter(MatchResult.application_id.in_(app_ids_subquery)).delete(synchronize_session=False)
+    db.query(Application).filter(Application.job_id == job_id).delete(synchronize_session=False)
+
+    db.delete(job)
+    db.commit()
+    return True
+
+
+def reset_candidates_table(db: Session) -> None:
+    """Wipe all candidates (and dependent rows) and restart ID numbering at 1."""
+    db.execute(text(
+        "TRUNCATE TABLE match_results, applications, candidate_skills, candidates "
+        "RESTART IDENTITY CASCADE"
+    ))
+    db.commit()
+
+
+def reset_jobs_table(db: Session) -> None:
+    """Wipe all jobs (and dependent rows) and restart ID numbering at 1."""
+    db.execute(text(
+        "TRUNCATE TABLE match_results, applications, jobs "
+        "RESTART IDENTITY CASCADE"
+    ))
+    db.commit()

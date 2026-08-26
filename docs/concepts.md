@@ -321,3 +321,11 @@ Test Case 2: Full Stack engineer skilled in React and modern CSS, 1+ year...
 ## Limitations
 - Small test set (2 cases) — a sanity check, not a rigorous benchmark
 - Ground truth is one person's (my) judgment, not multiple independent raters
+
+## Day 24 — MLflow & Experiment Tracking
+- For each versioning we are assigning inputs like the approach type, weight scores which are called parameters.
+- A run is one logged experiment - that includes all the paramters and metrics for that specific event saved as a single unit.
+- Logging both together is what makes a comparable run as we can look later and see a run with skill_weight = 0.4 performed better than one with skill-weight = 0.2, connecting a decision to a result.
+- Every run in independent of the other and has its own versioning and timestamp which will be helpful in comparing different runs and the results over a period.
+- Since we have three different versions in this system semantic mathing, semantic matching + skills overlap, semantic matching + skills overlap + experience, using this approach helps us log the runs.
+- currently there isnt a change in the versioning due to limited test data and flexiblity of systems, will test it again after scaling the system.

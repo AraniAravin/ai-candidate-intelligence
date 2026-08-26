@@ -61,14 +61,17 @@ def extract_candidate_info(cv_text: str) -> dict:
     """
     prompt = EXTRACTION_PROMPT_TEMPLATE.format(cv_text=cv_text)
 
-    response = ollama.generate(model=MODEL_NAME, prompt=prompt,options={"num_predict": 512})
+    response = ollama.generate(model=MODEL_NAME, prompt=prompt,options={"num_predict": 1024})
     raw_output = response["response"]
+    finish_reason = response.get("done_reason")
 
     cleaned = clean_json_response(raw_output)
 
     try:
         return json.loads(cleaned)
     except json.JSONDecodeError as e:
+        if finish_reason == "length":
+            print(f"  ⚠ Response was truncated (hit num_predict limit). Consider raising num_predict.")
         print(f"  ⚠ Failed to parse JSON. Raw output was:\n{raw_output}\n")
         raise e
 

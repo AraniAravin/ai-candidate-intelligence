@@ -76,6 +76,13 @@ def candidate_exists(point_id: int) -> bool:
     result = client.retrieve(collection_name=COLLECTION_NAME, ids=[point_id])
     return len(result) > 0
 
+def reset_collection() -> None:
+    """Delete and recreate the Qdrant collection — used when resetting candidates
+    so Qdrant point IDs realign with Postgres candidate IDs restarting at 1."""
+    if client.collection_exists(COLLECTION_NAME):
+        client.delete_collection(COLLECTION_NAME)
+    create_collection()
+
 
 if __name__ == "__main__":
     create_collection()

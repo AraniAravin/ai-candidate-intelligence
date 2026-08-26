@@ -6,6 +6,7 @@ FastAPI application wiring together the AI pipeline built in Weeks 1-2.
 from fastapi import FastAPI, UploadFile, File, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
+from sqlalchemy import or_
 from fastapi import HTTPException
 from pydantic import BaseModel
 from pathlib import Path
@@ -19,7 +20,13 @@ import crud
 from pdf_parser import extract_text_from_pdf
 from extract_job_info import extract_job_info
 from extract_candidate_info import extract_candidate_info
-from vector_store import create_collection, insert_candidate, search_candidates
+from vector_store import (
+    create_collection,
+    insert_candidate,
+    search_candidates,
+    delete_candidate as delete_candidate_from_qdrant,
+    reset_collection as reset_qdrant_collection,
+)
 from rag_chat import explain_ranking,answer_recruiter_question
 
 app = FastAPI(title="AI Candidate Intelligence Platform")
@@ -189,7 +196,9 @@ def analyze_candidates(db: Session = Depends(get_db)):
     processed = []
     failed = []
 
-    candidates = db.query(models.Candidate).filter(models.Candidate.status == "uploaded").all()
+    candidates = db.query(models.Candidate).filter(or_(models.Candidate.status == "uploaded",
+            models.Candidate.status == "failed",
+        )).all()
 
     for candidate in candidates:
 
@@ -338,3 +347,57 @@ def get_match_details(job_id: int, candidate_id: int, db: Session = Depends(get_
         experience_years=candidate.experience_years,
         explanation=explanation,
     )
+
+## Delete and resets 
+@app.delete("/candidates/{candidate_id}")
+def remove_candidate(candidate_id: int, db: Session = Depends(get_db)):
+    """Delete a candidate from both PostgreSQL and Qdrant."""
+    deleted = crud.delete_candidate(db, candidate_id)
+    if not deleted:
+        raise HTTPException(status_code=404, detail=f"Candidate {candidate_id} not found")
+
+    delete_candidate_from_qdrant(candidate_id)  # renamed import, see note below
+    return {"deleted": candidate_id}
+
+
+@app.delete("/jobs/{job_id}")
+def remove_job(job_id: int, db: Session = Depends(get_db)):
+    """Delete a job from PostgreSQL."""
+    deleted = crud.delete_job(db, job_id)
+    if not deleted:
+        raise HTTPException(status_code=404, detail=f"Job {job_id} not found")
+    return {"deleted": job_id}
+
+
+@app.post("/admin/reset/candidates")
+def reset_candidates(confirm: bool = False, db: Session = Depends(get_db)):
+    """Wipe ALL candidates from Postgres and Qdrant, restart IDs at 1.
+    Requires confirm=true to actually run — this is destructive and irreversible."""
+    if not confirm:
+        raise HTTPException(status_code=400, detail="Pass confirm=true to proceed. This permanently deletes all candidate data.")
+
+    crud.reset_candidates_table(db)
+    reset_qdrant_collection()
+    return {"status": "candidates reset — IDs will restart at 1"}
+
+
+@app.post("/admin/reset/jobs")
+def reset_jobs(confirm: bool = False, db: Session = Depends(get_db)):
+    """Wipe ALL jobs from Postgres, restart IDs at 1."""
+    if not confirm:
+        raise HTTPException(status_code=400, detail="Pass confirm=true to proceed. This permanently deletes all job data.")
+
+    crud.reset_jobs_table(db)
+    return {"status": "jobs reset — IDs will restart at 1"}
+
+
+@app.post("/admin/reset/all")
+def reset_all(confirm: bool = False, db: Session = Depends(get_db)):
+    """Wipe ALL candidates and jobs from both databases, restart both ID sequences at 1."""
+    if not confirm:
+        raise HTTPException(status_code=400, detail="Pass confirm=true to proceed. This permanently deletes all data.")
+
+    crud.reset_candidates_table(db)
+    crud.reset_jobs_table(db)
+    reset_qdrant_collection()
+    return {"status": "candidates and jobs fully reset — all IDs will restart at 1"}

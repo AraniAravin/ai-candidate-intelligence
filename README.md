@@ -259,3 +259,24 @@ all candidates.
   - In the Test Case 1, there was a mismatch between expected and actual ranking - the expected candidate '1' as top 1 was positioned second, the candidate had the exact skills listed in the JD but the candidate positioned 1 ('6') did not have the exact skills but was still ranked 1, which is a good point to catch though candidate 1 had exact skill match the rest of the CV did not have the relevant experience required and therefore embedding value could have been much farer than for candidate 6
  - Again candidate 7 and candidate 4 listed was swapped in the systems retrieval, though candidate 7 had more technical depth in the CV the cosine similarity does not recognise this it only recognises how close the vectors are in the embedding space.
  - pure semantic similarity method is working well in matching the candidates as a good match between the expected and actual candidates can be seen from the results, but from the above mismatches it is found that including skill matching can be an added efficiency in matching candidates
+
+ ### Day 24 — Experiment Tracking with MLflow
+- Learned experiment tracking: runs, parameters vs metrics, and why
+  systematic tracking beats scattered print statements when comparing
+  approaches.
+- Built three ranking versions (embedding only / + skills / + skills
+  + experience) in `backend/ranking_versions.py`.
+- Tracked all three via MLflow, logged in `backend/track_experiments.py`.
+- Real results: 
+  mean_precision_at_k: 1.000
+  mean_recall_at_k: 0.600
+  mean_mrr: 1.000
+  mean_ndcg_at_k: 1.000
+  For all the version I got the same results it is due to the small number of test cases used for evaluation, in the future after increasing the flexibility of the system through the user interface ( adding, deleting jobs or candidates) much more test cases and evaluation will be conducted.
+- There isnt any difference between the three different versions, as the output given by all three are the same, but it could also be due to the limited data used, mayb in the future evaluation more diverse testing could be done, as i believe using a better JD could improve the test results.
+
+### Infrastructure — Delete & Reset Tooling
+Added DELETE /candidates/{id}, DELETE /jobs/{id}, and POST /admin/reset/{candidates|jobs|all}
+endpoints to support clean, repeatable testing. Reset endpoints require confirm=true and
+recreate the Qdrant collection alongside truncating Postgres tables, keeping candidate IDs
+aligned across both databases (Qdrant point IDs = Postgres candidate IDs).
