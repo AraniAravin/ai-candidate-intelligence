@@ -280,3 +280,16 @@ Added DELETE /candidates/{id}, DELETE /jobs/{id}, and POST /admin/reset/{candida
 endpoints to support clean, repeatable testing. Reset endpoints require confirm=true and
 recreate the Qdrant collection alongside truncating Postgres tables, keeping candidate IDs
 aligned across both databases (Qdrant point IDs = Postgres candidate IDs).
+
+### Day 25 — Automated Testing with Pytest
+- Learned pytest fundamentals: fixtures, test discovery, mocking with
+  monkeypatch, and why tests shouldn't depend on live external services
+  (Ollama, real Postgres/Qdrant) — speed, reliability, and actually
+  testing your own code rather than the external service.
+- Built a test suite covering: PDF extraction, LLM-based extraction
+  (mocked), embedding generation (real, local), API endpoints
+  (in-memory SQLite), and error handling (404s, validation, failed
+  extraction not crashing the batch).
+- When breaking a test case a major naming convention issue was spotted, but breaking a test shows how the results differ, and the mocked tests worl much faster than the real-model test due to limited network calls and LLM prompting and database retrieval.
+- Known scope gap: Qdrant and MLflow integration aren't covered by
+  automated tests yet — reasonable boundary for now, noted honestly.

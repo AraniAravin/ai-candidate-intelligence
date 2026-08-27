@@ -329,3 +329,18 @@ Test Case 2: Full Stack engineer skilled in React and modern CSS, 1+ year...
 - Every run in independent of the other and has its own versioning and timestamp which will be helpful in comparing different runs and the results over a period.
 - Since we have three different versions in this system semantic mathing, semantic matching + skills overlap, semantic matching + skills overlap + experience, using this approach helps us log the runs.
 - currently there isnt a change in the versioning due to limited test data and flexiblity of systems, will test it again after scaling the system.
+
+## Day 25 — Testing & Mocking
+Mocking helps us mimic the output of an external function during a test, like the LLM responses and the Db calls, as they are slow and where that functions output is not actually being tested and therefore accidental failure of that function can result in the original test failing for unnecessary reasons.Pythons monkeypatch fixture does this by temporarily replacing for the duration of one test and then restoring it.
+
+When testing an end point that calls the DB, we dont call the actual db for reasons where the testing data gets mixed with real data. SO SQLite works as an in memory db just for tests, it also uses the SQLAlchemy models against it, therefore the table, columns will all be same, overifing test_db just for tests.
+
+But for the embedding model testing we are actually calling the model as this isnt slow and we really need ti call the model as that is the whole purpose of testing that function.
+
+Pytest autodiscovers files names test and works on functions named test_
+Fixtures are reusable codes where the function decorated with @pytest.fixture that other test functions can requet simply by naming it as a parameter.
+
+## Debuggings
+The "no network call" claim refers to runtime behavior after the initial download, not to the first time you ever use the model. Here's the actual sequence:
+
+When a test was deliberately broken it failed demonstrating genuine failure, this helped me figure an issue of a file issue, earlier it was named wrong and therefore it didnt get identified that the test cases were actually not running, but after breaking this and still passing all test cases it was understood the file wasnt even running due to naming convention error..
