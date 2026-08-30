@@ -3,8 +3,8 @@ init_db.py
 Creates all tables defined in models.py inside PostgreSQL.
 """
 
-from database import engine, Base
 import models  # noqa: F401 — import ensures models are registered with Base
+from database import Base, engine
 
 if __name__ == "__main__":
     print("Creating tables...")

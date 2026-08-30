@@ -3,7 +3,7 @@ models.py
 SQLAlchemy ORM models: Candidates, Jobs, Skills, Applications, Match Results.
 """
 
-from sqlalchemy import Column, Integer, String, Float, Text, ForeignKey, DateTime, Table
+from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String, Table, Text
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 

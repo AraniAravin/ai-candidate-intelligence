@@ -1,6 +1,4 @@
-import json
 
-from unittest.mock import MagicMock
 
 
 def test_health_check(client):

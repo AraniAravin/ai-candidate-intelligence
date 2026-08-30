@@ -89,10 +89,10 @@ Two modes:
 """
 
 import ollama
-
-from vector_store import search_candidates, client, COLLECTION_NAME
-from match import get_embedding
 from sklearn.metrics.pairwise import cosine_similarity
+
+from match import get_embedding
+from vector_store import COLLECTION_NAME, client, search_candidates
 
 MODEL_NAME = "llama3.2"
 

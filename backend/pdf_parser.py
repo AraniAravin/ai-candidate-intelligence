@@ -3,8 +3,9 @@ pdf_parser.py
 Extracts raw text from a PDF CV using PyMuPDF.
 """
 
-import fitz  # PyMuPDF
 from pathlib import Path
+
+import fitz  # PyMuPDF
 
 
 def extract_text_from_pdf(pdf_path: str) -> str:

@@ -69,11 +69,11 @@ def extract_candidate_info(cv_text: str) -> dict:
 
     try:
         return json.loads(cleaned)
-    except json.JSONDecodeError as e:
+    except json.JSONDecodeError:
         if finish_reason == "length":
-            print(f"  ⚠ Response was truncated (hit num_predict limit). Consider raising num_predict.")
+            print("  ⚠ Response was truncated (hit num_predict limit). Consider raising num_predict.")
         print(f"  ⚠ Failed to parse JSON. Raw output was:\n{raw_output}\n")
-        raise e
+        raise 
 
 
 if __name__ == "__main__":

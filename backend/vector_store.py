@@ -6,10 +6,10 @@ Qdrant integration: insert, search, and delete candidate embeddings.
 from pathlib import Path
 
 from qdrant_client import QdrantClient
-from qdrant_client.models import Distance, VectorParams, PointStruct
+from qdrant_client.models import Distance, PointStruct, VectorParams
 
-from pdf_parser import extract_text_from_pdf
 from match import get_embedding
+from pdf_parser import extract_text_from_pdf
 
 COLLECTION_NAME = "candidates"
 VECTOR_SIZE = 384  # matches all-MiniLM-L6-v2's output dimension

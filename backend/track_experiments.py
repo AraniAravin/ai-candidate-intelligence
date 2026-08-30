@@ -7,11 +7,19 @@ logs parameters and metrics to MLflow for comparison.
 import mlflow
 
 from database import SessionLocal
-from models import Candidate, Job
 from evaluation import (
-    load_test_dataset, precision_at_k, recall_at_k, reciprocal_rank, ndcg_at_k,
+    load_test_dataset,
+    ndcg_at_k,
+    precision_at_k,
+    recall_at_k,
+    reciprocal_rank,
 )
-from ranking_versions import rank_v1_embedding_only, rank_v2_embedding_plus_skills, rank_v3_full_composite
+from models import Candidate, Job
+from ranking_versions import (
+    rank_v1_embedding_only,
+    rank_v2_embedding_plus_skills,
+    rank_v3_full_composite,
+)
 
 mlflow.set_experiment("candidate-ranking-approaches")
 

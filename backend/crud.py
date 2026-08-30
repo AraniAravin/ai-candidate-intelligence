@@ -3,10 +3,10 @@ crud.py
 Database operations (Create/Read/Update/Delete) for candidates.
 """
 
-from sqlalchemy.orm import Session
-from models import Candidate, Skill,Job
 from sqlalchemy import text
-from models import Application, MatchResult
+from sqlalchemy.orm import Session
+
+from models import Application, Candidate, Job, MatchResult, Skill
 
 
 def get_or_create_skill(db: Session, skill_name: str) -> Skill:

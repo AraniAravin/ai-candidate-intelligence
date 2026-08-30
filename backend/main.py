@@ -3,31 +3,33 @@ main.py
 FastAPI application wiring together the AI pipeline built in Weeks 1-2.
 """
 
-from fastapi import FastAPI, UploadFile, File, Depends
-from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy.orm import Session
-from sqlalchemy import or_
-from fastapi import HTTPException
-from pydantic import BaseModel
-from pathlib import Path
 import shutil
+from pathlib import Path
 
+from fastapi import Depends, FastAPI, File, HTTPException, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from sqlalchemy import or_
+from sqlalchemy.orm import Session
 
-from database import get_db, engine, Base
-import models  # noqa: F401
 import crud
-
-from pdf_parser import extract_text_from_pdf
-from extract_job_info import extract_job_info
+import models
+from database import Base, engine, get_db
 from extract_candidate_info import extract_candidate_info
+from extract_job_info import extract_job_info
+from pdf_parser import extract_text_from_pdf
+from rag_chat import answer_recruiter_question, explain_ranking
 from vector_store import (
     create_collection,
     insert_candidate,
     search_candidates,
+)
+from vector_store import (
     delete_candidate as delete_candidate_from_qdrant,
+)
+from vector_store import (
     reset_collection as reset_qdrant_collection,
 )
-from rag_chat import explain_ranking,answer_recruiter_question
 
 app = FastAPI(title="AI Candidate Intelligence Platform")
 

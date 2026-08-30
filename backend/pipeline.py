@@ -6,9 +6,10 @@ by semantic similarity.
 
 from pathlib import Path
 
-from pdf_parser import extract_text_from_pdf
-from match import get_embedding
 from sklearn.metrics.pairwise import cosine_similarity
+
+from match import get_embedding
+from pdf_parser import extract_text_from_pdf
 
 
 def rank_candidates(job_description: str, cv_paths: list[str]) -> list[tuple[str, float]]:

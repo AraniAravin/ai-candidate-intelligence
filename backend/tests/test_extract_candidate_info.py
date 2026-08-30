@@ -1,6 +1,6 @@
 import json
 
-from extract_candidate_info import extract_candidate_info, clean_json_response
+from extract_candidate_info import clean_json_response, extract_candidate_info
 
 
 def test_clean_json_response_strips_markdown_fences():

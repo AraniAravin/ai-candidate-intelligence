@@ -6,7 +6,6 @@ a structured job profile as JSON.
 
 import json
 import re
-from pathlib import Path
 
 import ollama
 
@@ -83,9 +82,9 @@ def extract_job_info(job_text: str) -> dict:
 
     try:
         return json.loads(cleaned)
-    except json.JSONDecodeError as e:
+    except json.JSONDecodeError:
         print(f"  ⚠ Failed to parse JSON. Raw output was:\n{raw_output}\n")
-        raise e
+        raise 
 
 
 if __name__ == "__main__":
