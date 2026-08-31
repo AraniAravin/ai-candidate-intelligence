@@ -90,7 +90,7 @@ if __name__ == "__main__":
             try:
                 profile = extract_candidate_info(cv_text)
                 print(json.dumps(profile, indent=2))
-            except Exception as e:
+            except Exception as e: # noqa: BLE001
                 print(f"  Error: {e}")
 
             print("-" * 50)

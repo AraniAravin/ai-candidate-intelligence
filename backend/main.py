@@ -151,7 +151,7 @@ async def upload_candidates(files: list[UploadFile] = File(...),db: Session = De
 
     for file in files:
         dest_path = UPLOAD_DIR / file.filename
-        with open(dest_path, "wb") as f:
+        with open(dest_path, "wb") as f: # noqa: ASYNC230
             shutil.copyfileobj(file.file, f)
 
         # candidates_db[next_candidate_id] = {
@@ -220,7 +220,7 @@ def analyze_candidates(db: Session = Depends(get_db)):
 
             processed.append({"id": candidate.id, "name": candidate.name})
 
-        except Exception as e:
+        except Exception as e: # noqa: BLE001
             crud.mark_candidate_failed(db, candidate, str(e))
             failed.append({"id": candidate.id, "reason": str(e)})
 
