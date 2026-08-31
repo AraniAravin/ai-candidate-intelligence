@@ -323,7 +323,7 @@ Test Case 2: Full Stack engineer skilled in React and modern CSS, 1+ year...
 - Ground truth is one person's (my) judgment, not multiple independent raters
 
 ## Day 24 — MLflow & Experiment Tracking
-- For each versioning we are assigning inputs like the approach type, weight scores which are called parameters.
+- For each versioning we are assigning inputs like the approach type, weight scores which are called parameters. 
 - A run is one logged experiment - that includes all the paramters and metrics for that specific event saved as a single unit.
 - Logging both together is what makes a comparable run as we can look later and see a run with skill_weight = 0.4 performed better than one with skill-weight = 0.2, connecting a decision to a result.
 - Every run in independent of the other and has its own versioning and timestamp which will be helpful in comparing different runs and the results over a period.
@@ -344,3 +344,10 @@ Fixtures are reusable codes where the function decorated with @pytest.fixture th
 The "no network call" claim refers to runtime behavior after the initial download, not to the first time you ever use the model. Here's the actual sequence:
 
 When a test was deliberately broken it failed demonstrating genuine failure, this helped me figure an issue of a file issue, earlier it was named wrong and therefore it didnt get identified that the test cases were actually not running, but after breaking this and still passing all test cases it was understood the file wasnt even running due to naming convention error..
+
+## Day 26 — CI/CD Pipeline
+A service container is a real, temporary instance of a software that github actions utilises for that time of the run then thrown away after that. Because the vector_store calls to the local host of QDrant and expects the QDrant server to exist, so theres no way to mock that since it is a client-server connection. Earlier we didnt not have one for PostGreSQL then later it was created after the workflow failed.
+
+I originally assumed DATABASE_URL could just be a fake placeholder string, since my tests override get_db with an in-memory SQLite session and never touch the real Postgres engine. That assumption was mostly right — until my first CI run proved it wrong: main.py calls Base.metadata.create_all(bind=engine) directly at import time, which isn't lazy at all — it tries to actually connect to Postgres the moment main.py is imported, before any test logic runs. So the placeholder had to become a real, working connection string pointing at an actual (if disposable) Postgres service container, just like I did for Qdrant.
+
+What I learned from my first failing CI run is that local success doesn't mean anything is actually correct — it just means it happens to work in my specific environment, with my installed packages, my running Postgres, my file paths. CI stripped all of that away and exposed real assumptions I didn't know I was making: that Postgres would always be running, that packages installed locally would all be cross-platform, that my working directory would always be backend/. Each failure was a genuinely different category of hidden assumption, not just one bug repeated.

@@ -293,3 +293,16 @@ aligned across both databases (Qdrant point IDs = Postgres candidate IDs).
 - When breaking a test case a major naming convention issue was spotted, but breaking a test shows how the results differ, and the mocked tests worl much faster than the real-model test due to limited network calls and LLM prompting and database retrieval.
 - Known scope gap: Qdrant and MLflow integration aren't covered by
   automated tests yet — reasonable boundary for now, noted honestly.
+
+  ![CI](https://github.com/AraniAravin/ai-candidate-intelligence/actions/workflows/ci.yml/badge.svg)
+
+  ### Day 26 — CI/CD with GitHub Actions
+- Learned GitHub Actions core concepts: workflows, jobs, service
+  containers, and why CI runners need every dependency configured
+  explicitly (no shared state with a local dev machine).
+- Built `.github/workflows/ci.yml`: lints (ruff), tests (pytest,
+  including a real Qdrant service container), and verifies both
+  backend import and frontend build on every push to main.
+- Added a CI status badge to the README.
+- In the first run there was an issue with the dependencies as the requirements.txt has a windows specific library which was tried to be downloaded in the workflow so that was removed.
+- Then there was issues with the ruff warnings and with the workflow files, then with postgresql not being created like QDrant
